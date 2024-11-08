@@ -1,0 +1,13 @@
+sequelize-cli seed:generate --name demo-user        //Create seed file
+
+sequelize-cli db:seed:all       //Run all Seed Files
+sequelize-cli db:seed:undo          //Undo Recent seed file
+sequelize-cli db:seed:undo --seed name-of-seed-as-in-data       //Undo Specific Seed Files
+sequelize-cli db:seed:undo:all      //Undo All Seed Files
+
+
+sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string     //Create Migeration
+sequelize-cli db:migrate        //Run all Migeration
+sequelize-cli db:migrate:undo       Undo Recent Migeration
+sequelize-cli db:migrate:undo:all       //Undo all Migeration
+sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js       //Undo specific Migeration
