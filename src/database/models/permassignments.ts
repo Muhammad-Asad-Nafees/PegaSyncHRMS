@@ -1,4 +1,7 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import Roles from './roles';
+import Permissions from './permissions';
+
 
 // Define the PermAssignment model class
 class PermAssignment extends Model<InferAttributes<PermAssignment>, InferCreationAttributes<PermAssignment>> {
@@ -23,13 +26,23 @@ export function init(sequelize: Sequelize) {
         primaryKey: true,
         allowNull: false,
       },
-      permID: {
+      permID: { // Foreign key column
         type: DataTypes.INTEGER,
-        allowNull: false, // `permID` is required
+        allowNull: false,
+        references: {
+          model: 'permissions', // Reference to Users table
+          key: 'id',      // Foreign key references Users.id
+        },
+        onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
-      roleID: {
+      roleID: { // Foreign key column
         type: DataTypes.INTEGER,
-        allowNull: false, // `roleID` is required
+        allowNull: false,
+        references: {
+          model: 'roles', // Reference to Users table
+          key: 'id',      // Foreign key references Users.id
+        },
+        onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
       isActive: {
         type: DataTypes.INTEGER,
@@ -65,6 +78,6 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-  // PermAssignment.belongsTo(Permission, { foreignKey: 'permID' });
-  // PermAssignment.belongsTo(Role, { foreignKey: 'roleID' });
+  PermAssignment.belongsTo(Permissions, { foreignKey: 'permID' });
+  PermAssignment.belongsTo(Roles, { foreignKey: 'roleID' });
 }

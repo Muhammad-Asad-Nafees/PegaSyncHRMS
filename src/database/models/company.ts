@@ -1,4 +1,5 @@
 import { Sequelize, DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import Clients from './client';
 
 // Define the Company model class with the provided fields
 class Company extends Model<InferAttributes<Company>, InferCreationAttributes<Company>> {
@@ -28,9 +29,14 @@ export function init(sequelize: Sequelize) {
         primaryKey: true,
         allowNull: false,
       },
-      clientID: {
+      clientID: { // Foreign key column
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          model: 'clients', // Reference to Users table
+          key: 'id',      // Foreign key references Users.id
+        },
+        onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
       companyName: {
         type: DataTypes.STRING,
@@ -90,6 +96,5 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (if necessary)
 export function associate() {
-  // Example association (if you have relationships with other models):
-  // Company.belongsTo(Country, { foreignKey: 'CountryID' });
+  Company.belongsTo(Clients, { foreignKey: 'clientID' }); // Define the association
 }

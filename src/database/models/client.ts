@@ -6,6 +6,7 @@ import {
     Model,
     Sequelize,
 } from 'sequelize';
+import Company from './company';
 // import bcrypt from 'bcrypt';
 
 class Clients extends Model<InferAttributes<Clients>, InferCreationAttributes<Clients>> {
@@ -66,5 +67,5 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (optional)
 export function associate() {
-
+  Clients.hasMany(Company, { foreignKey: 'clientID' });
 }

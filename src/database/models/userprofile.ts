@@ -6,10 +6,12 @@ import {
     Model,
     Sequelize,
 } from 'sequelize';
+import Users from './user';
 // import bcrypt from 'bcrypt';
 
 class UserProfile extends Model<InferAttributes<UserProfile>, InferCreationAttributes<UserProfile>> {
   declare id: CreationOptional<number>;
+  declare userId: number; // Foreign key to Users table
   declare profileID: number;
   declare employeeID: number;
   declare firstName: string;
@@ -36,6 +38,15 @@ export function init(sequelize: Sequelize) {
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
+      },
+      userId: { // Foreign key column
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users', // Reference to Users table
+          key: 'id',      // Foreign key references Users.id
+        },
+        onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
       profileID: {
         type: DataTypes.INTEGER,
@@ -110,6 +121,5 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (optional)
 export function associate() {
-  // Define associations here if necessary, e.g.:
-  // UserProfile.hasMany(OtherModel, { foreignKey: 'userProfileId' });
+  UserProfile.belongsTo(Users, { foreignKey: 'userId' }); // Define the association
 }

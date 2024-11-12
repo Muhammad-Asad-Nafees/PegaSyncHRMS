@@ -6,6 +6,8 @@ import {
     Model,
     Sequelize,
 } from 'sequelize';
+import UserProfile from './userprofile';
+import Company from './company';
 // import bcrypt from 'bcrypt';
 
 
@@ -53,9 +55,14 @@ class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>
           type: DataTypes.STRING,
           allowNull: true,
         },
-        companyId: {
+        companyId: { // Foreign key column
           type: DataTypes.INTEGER,
           allowNull: false,
+          references: {
+            model: 'company', // Reference to Users table
+            key: 'id',      // Foreign key references Users.id
+          },
+          onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
         },
         isActive: {
           type: DataTypes.INTEGER,
@@ -95,5 +102,6 @@ class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>
   }
   
   export function associate() {
-    // Associations can be added here
+    Users.hasMany(UserProfile, { foreignKey: 'userId' });
+    Users.belongsTo(Company, { foreignKey: 'companyId' }); // Define the association
   }
