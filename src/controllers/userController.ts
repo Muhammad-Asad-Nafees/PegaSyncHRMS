@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Users } from '../database/models';
 import { body, check, validationResult } from 'express-validator';
 import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass } from '../lib/tool'
+import { log } from 'console';
 
 export const validate = (method: any) => {
     switch (method) {
@@ -21,11 +22,14 @@ export const validate = (method: any) => {
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
-        //const users = await User.findAll();
+        //const users = await Users.findAll();
+       // console.log({users});
+       // res.json('users');
         dispatchSuc(res, [{ 'msg': 'message', 'code': 'code', "msgs": "succsessfully Inserted" }], 201)
-        //res.json('users');
+     
     } catch (error) {
-        //res.status(500).send(error.message);
+        //console.log({error});
+        res.status(500).send(error);
     }
 };
 

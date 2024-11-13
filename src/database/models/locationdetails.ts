@@ -1,5 +1,5 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-
+import Location from './locations';
 // Define the LocationDetail model class
 class LocationDetail extends Model<InferAttributes<LocationDetail>, InferCreationAttributes<LocationDetail>> {
   declare id: CreationOptional<number>;
@@ -32,9 +32,14 @@ export function init(sequelize: Sequelize) {
         primaryKey: true,
         allowNull: false,
       },
-      locationID: {
+      locationID: { // Foreign key column
         type: DataTypes.INTEGER,
-        allowNull: true, // locationID can be nullable
+        allowNull: false,
+        references: {
+          model: 'locations', // Reference to Users table
+          key: 'id',      // Foreign key references Users.id
+        },
+        onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
       profileID: {
         type: DataTypes.INTEGER,
@@ -110,6 +115,6 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-  // LocationDetail.belongsTo(Location, { foreignKey: 'locationID' });
+   LocationDetail.belongsTo(Location, { foreignKey: 'locationID' });
   // LocationDetail.belongsTo(Profile, { foreignKey: 'profileID' });
 }

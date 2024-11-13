@@ -105,3 +105,5 @@ class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>
     Users.hasMany(UserProfile, { foreignKey: 'userId' });
     Users.belongsTo(Company, { foreignKey: 'companyId' }); // Define the association
   }
+
+  export { Users };
