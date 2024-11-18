@@ -112,7 +112,7 @@ export function init(sequelize: Sequelize) {
     {
       sequelize,
       modelName: 'UserProfile', 
-      tableName: 'user_profile', 
+      tableName: 'userprofile', 
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
     }
@@ -121,5 +121,5 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (optional)
 export function associate() {
-  UserProfile.belongsTo(Users, { foreignKey: 'userId' }); // Define the association
+
 }

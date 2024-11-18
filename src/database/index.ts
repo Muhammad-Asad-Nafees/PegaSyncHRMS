@@ -2,45 +2,66 @@ import { Op, Sequelize, Transaction } from 'sequelize'
 import * as models from './models'
 import {
     Users,
+    UserProfile,
+    Company,
+    Client,
+    Jobs,
+    Roles,
+    RoleAssignment,
+    Permissions,
+    PermAssignments,
+    Location,
+    LocationDetails
+
 } from './models'
 
-const sequelize = new Sequelize(process.env.DATABASE_CONNECTION_URI as string, {
-    logging: true,
-    dialect: "mysql"
-})
+
+const DATABASE_CONNECTION_URI = `mysql://root:root@localhost:3306/pegasynchrms`;
+
+// Direct connection using the DATABASE_CONNECTION_URI from environment variable
+const sequelize = new Sequelize(DATABASE_CONNECTION_URI, {
+    dialect: 'mysql',
+    logging: true,  // Logs SQL queries in the console
+});
+
+sequelize.authenticate()
+    .then(() => {
+        console.log('Database connection established successfully.');
+    })
+    .catch((err) => {
+        console.error('Error connecting to the database:', err);
+    });
+
+export default sequelize;
 
 function initModels() {
     models.initUsers(sequelize);
-    // models.initApp(sequelize);
-    // models.initStore(sequelize);
-    // models.initCustomer(sequelize);
-    // models.initReview(sequelize);
-    // models.initSocialLogin(sequelize);
-    // models.initReviewRequest(sequelize);
-    // models.initSessionRequest(sequelize);
-    // models.initSupport(sequelize);
-    // models.initSocialLink(sequelize);
-    // models.initCampaign(sequelize);
-    // models.initPlan(sequelize);
-    // models.initCampaignRun(sequelize);
-    // models.initPageViews(sequelize);
+    models.initUserProfile(sequelize);
+    models.initClient(sequelize);
+    models.initCompany(sequelize);
+    models.initJobs(sequelize);
+    models.initLocation(sequelize);
+    models.initLocationDetails(sequelize);
+    models.initRoles(sequelize);
+    models.initRoleAssignment(sequelize);
+    models.initPermissions(sequelize);
+    models.initPermAssignments(sequelize);
+   
 }
 
 function associateModels() {
     models.associateUsers();
-    // models.associateApp();
-    // models.associateStore();
-    // models.associateCustomer();
-    // models.associateReview();
-    // models.associateSocialLogin();
-    // models.associateReviewRequest();
-    // models.associateSessionRequest();
-    // models.associateSupport();
-    // models.associateSocialLink();
-    // models.associateCampaign();
-    // models.associatePlan();
-    // models.associateCampaignRun();
-    // models.assocaitePageViews();
+    models.associateUserProfile();
+    models.associateClient();
+    models.associateCompany();
+    models.associateJobs();
+    models.associateLocation();
+    models.associateLocationDeayils();
+    models.associateRoles();
+    models.associateRoleAssignment();
+    models.associatePermissions();
+    models.associatePermAssignments();
+
 }
 
 initModels()
@@ -49,17 +70,14 @@ associateModels()
 export { sequelize, Sequelize, Transaction, Op }
 export {
     Users,
-    // App,
-    // Store,
-    // Customer,
-    // Review,
-    // SocialLogin,
-    // ReviewRequest,
-    // SessionRequest,
-    // Support,
-    // SocialLink,
-    // Campaign,
-    // Plan,
-    // CampaignRun,
-    // PageViews
+    UserProfile,
+    Company,
+    Client,
+    Jobs,
+    Roles,
+    RoleAssignment,
+    Permissions,
+    PermAssignments,
+    Location,
+    LocationDetails
 }
