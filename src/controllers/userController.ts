@@ -106,43 +106,39 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 
-// export const registerUser = async (req: Request, res: Response): Promise<void> => {
+export const registerUser = async (req: Request, res: Response): Promise<void> => {
 
-//     const { firstName, lastName, companyEmail, actualEmail, hiredate, createdby,
-//         password, confirmPassword, scheduleID, phoneNo, personalAddress,
-//         locationID, zipCode, city, countryID, companyId } = req.body;
+    const { firstName, lastName, companyEmail, actualEmail, hiredate, createdby,
+        password, confirmPassword, scheduleID, phoneNo, personalAddress,
+        locationID, zipCode, city, countryID, companyId } = req.body;
 
-//     try {
-//         if (password !== confirmPassword) {
-//             res.status(400).json({ status: false, message: 'Passwords do not match' });
-//             return;
-//         }
+    try {
+        if (password !== confirmPassword) {
+            res.status(400).json({ status: false, message: 'Passwords do not match' });
+            return;
+        }
 
-//         // Hash the password
-//         const hashedPassword = await cryptPass(password);
+        // Hash the password
+        const hashedPassword = await cryptPass(password);
 
-//         console.log(hashedPassword);
+        console.log(hashedPassword);
 
-//         // Start a transaction
-//         const transaction = await sequelize.transaction();
-//         const result = await Users.findOne({
-//             attributes: [[sequelize.fn('MAX', sequelize.col('profileId')), 'profileId']],
-//             raw: true,
-//         });
-//         const lastProfileId = result?.profileId || 0; // Use 0 if no users exist
-//         const newProfileId = lastProfileId + 1;
-//         console.log(`Last Profile ID: ${lastProfileId}, New Profile ID: ${newProfileId}`);
-//         const user = await Users.create(
-//             {
-//                 firstName: firstName,
-//                 hashPassword: hashedPassword,
-//                 profileId: newProfileId,
-//                 companyId: companyId
-//             }
-//         );
-//         res.status(200).json({ status: true, message: 'User Created Successful', data: hashedPassword });
+        const user = await Users.create(
+            {
+                firstName: firstName,
+                lastName: lastName,
+                companyEmail:companyEmail,
+                actualEmail:actualEmail,
+                phoneNo:phoneNo,
+                address:personalAddress,
+                countryId:countryID,
+                hashPassword: hashedPassword,
+                companyId: companyId
+            }
+        );
+        res.status(200).json({ status: true, message: 'User Created Successful', data: user });
 
-//     } catch (error) {
-
-//     }
-// };        
+    } catch (error) {
+        res.status(200).json({ status: true, message: 'User Created Successful', data: error });
+    }
+};        
