@@ -2,7 +2,6 @@ import { Op, Sequelize, Transaction } from 'sequelize'
 import * as models from './models'
 import {
     Users,
-    UserProfile,
     Company,
     Client,
     Jobs,
@@ -10,8 +9,7 @@ import {
     RoleAssignment,
     Permissions,
     PermAssignments,
-    Location,
-    LocationDetails
+    Location
 
 } from './models'
 
@@ -36,12 +34,10 @@ export default sequelize;
 
 function initModels() {
     models.initUsers(sequelize);
-    models.initUserProfile(sequelize);
     models.initClient(sequelize);
     models.initCompany(sequelize);
     models.initJobs(sequelize);
     models.initLocation(sequelize);
-    models.initLocationDetails(sequelize);
     models.initRoles(sequelize);
     models.initRoleAssignment(sequelize);
     models.initPermissions(sequelize);
@@ -51,12 +47,10 @@ function initModels() {
 
 function associateModels() {
     models.associateUsers();
-    models.associateUserProfile();
     models.associateClient();
     models.associateCompany();
     models.associateJobs();
     models.associateLocation();
-    models.associateLocationDeayils();
     models.associateRoles();
     models.associateRoleAssignment();
     models.associatePermissions();
@@ -70,7 +64,6 @@ associateModels()
 export { sequelize, Sequelize, Transaction, Op }
 export {
     Users,
-    UserProfile,
     Company,
     Client,
     Jobs,
@@ -78,6 +71,5 @@ export {
     RoleAssignment,
     Permissions,
     PermAssignments,
-    Location,
-    LocationDetails
+    Location
 }

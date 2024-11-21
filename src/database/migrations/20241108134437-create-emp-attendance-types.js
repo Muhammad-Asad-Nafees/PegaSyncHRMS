@@ -2,24 +2,37 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Jobs', {
+    await queryInterface.createTable('empAttendanceTypes', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      jobName: {
+      typeName: {
         type: Sequelize.STRING
       },
-      jobDesc: {
-        type: Sequelize.STRING
+      companyId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'company',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
-      jobLevelID: {
-        type: Sequelize.INTEGER
-      },
-      companyID: {
-        type: Sequelize.INTEGER
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -42,6 +55,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Jobs');
+    await queryInterface.dropTable('empAttendanceTypes');
   }
 };

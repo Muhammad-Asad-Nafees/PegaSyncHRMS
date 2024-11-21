@@ -2,24 +2,48 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('EmpAttendanceProfiles', {
+    await queryInterface.createTable('empAttendanceProfiles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userRecID: {
-        type: Sequelize.INTEGER
+      userRecId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
-      locationID: {
-        type: Sequelize.INTEGER
+      locationId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'locations',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       zoneDateTime: {
         type: Sequelize.STRING
       },
-      companyID: {
-        type: Sequelize.INTEGER
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -42,6 +66,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('EmpAttendanceProfiles');
+    await queryInterface.dropTable('empAttendanceProfiles');
   }
 };

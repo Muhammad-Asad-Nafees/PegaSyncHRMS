@@ -2,15 +2,23 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('ApprovalDetails', {
+    await queryInterface.createTable('approvalDetails', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      profileID: {
-        type: Sequelize.INTEGER
+      profileId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'approvalProfiles',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       approverID: {
         type: Sequelize.INTEGER
@@ -20,6 +28,17 @@ module.exports = {
       },
       isDeclined: {
         type: Sequelize.INTEGER
+      },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -42,6 +61,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ApprovalDetails');
+    await queryInterface.dropTable('approvalDetails');
   }
 };

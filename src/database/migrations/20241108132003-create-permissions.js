@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Permissions', {
+    await queryInterface.createTable('permissions', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,8 +15,27 @@ module.exports = {
       permissionDesc: {
         type: Sequelize.STRING
       },
-      companyID: {
-        type: Sequelize.INTEGER
+      companyId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'company',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
+      },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -39,6 +58,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Permissions');
+    await queryInterface.dropTable('permissions');
   }
 };

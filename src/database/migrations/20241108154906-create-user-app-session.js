@@ -9,8 +9,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userRecID: {
-        type: Sequelize.INTEGER
+      userRecId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       latitude: {
         type: Sequelize.STRING
@@ -41,6 +49,17 @@ module.exports = {
       },
       OSVersion: {
         type: Sequelize.STRING
+      },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,

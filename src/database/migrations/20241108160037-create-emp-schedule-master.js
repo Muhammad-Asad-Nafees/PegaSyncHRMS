@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('EmpScheduleMasters', {
+    await queryInterface.createTable('empScheduleMasters', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,13 +10,37 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       submittedBy: {
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       requestedFor: {
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
-      locationID: {
-        type: Sequelize.INTEGER
+      locationId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'locations',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       startDate: {
         type: Sequelize.DATE
@@ -35,6 +59,17 @@ module.exports = {
       },
       totalHours: {
         type: Sequelize.STRING
+      },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -57,6 +92,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('EmpScheduleMasters');
+    await queryInterface.dropTable('empScheduleMasters');
   }
 };

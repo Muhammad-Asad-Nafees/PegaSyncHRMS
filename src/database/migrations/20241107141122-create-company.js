@@ -2,14 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Company', {
+    await queryInterface.createTable('company', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      clientID: {
+      clientId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         foreignKey: true,
@@ -32,18 +32,35 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      city: {
+      countryId: {
         allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'countries',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
+      },
+      city: {
+        allowNull: true,
         type: Sequelize.STRING
       },
-      countryID: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
+      state: {
+        allowNull: true,
+        type: Sequelize.STRING
       },
-      takeAwayMealHours: {
+      tableId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        default: 1
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -66,6 +83,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Company');
+    await queryInterface.dropTable('company');
   }
 };

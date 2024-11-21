@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Locations', {
+    await queryInterface.createTable('locations', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,11 +15,86 @@ module.exports = {
       locationUID: {
         type: Sequelize.STRING
       },
-      companyID: {
+      companyId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'company',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
+      },
+      countryId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'countries',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
+      },
+      city: {
         type: Sequelize.STRING
       },
-      profileID: {
+      zipCode: {
         type: Sequelize.STRING
+      },
+      address: {
+        type: Sequelize.STRING
+      },
+      latitude: {
+        type: Sequelize.STRING
+      },
+      longitude: {
+        type: Sequelize.STRING
+      },
+      radius: {
+        type: Sequelize.INTEGER,
+        default: 1
+      },
+      timeClockSessionDuration: {
+        type: Sequelize.INTEGER,
+        default: 15
+      },
+      isRangeAlert: {
+        type: Sequelize.INTEGER,
+        default: 1
+      },
+      locationAlertInterval: {
+        type: Sequelize.INTEGER,
+        default: 30
+      },
+      gracePeriod: {
+        type: Sequelize.INTEGER,
+        default: 30
+      },
+      isTimeZoneCheck: {
+        type: Sequelize.INTEGER,
+        default: 1
+      },
+      isScheduled: {
+        type: Sequelize.INTEGER,
+        default: 1
+      },
+      takeAwayMealHours: {
+        allowNull: true,
+        type: Sequelize.INTEGER,
+        default: 1
+      },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -42,6 +117,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Locations');
+    await queryInterface.dropTable('locations');
   }
 };

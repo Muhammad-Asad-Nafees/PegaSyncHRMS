@@ -2,18 +2,29 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('TimeZoneAssignments', {
+    await queryInterface.createTable('countries', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      countryID: {
-        type: Sequelize.INTEGER
+      countryName: {
+        type: Sequelize.STRING
       },
-      timeZoneID: {
-        type: Sequelize.INTEGER
+      countryCode: {
+        type: Sequelize.STRING
+      },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -36,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('TimeZoneAssignments');
+    await queryInterface.dropTable('countries');
   }
 };

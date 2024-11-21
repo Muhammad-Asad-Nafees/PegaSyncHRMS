@@ -2,17 +2,11 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('EmpAttendanceAlerts', {
+    await queryInterface.createTable('empAttendanceAlerts', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      alertID: {
-        type: Sequelize.INTEGER
-      },
-      domainID: {
         type: Sequelize.INTEGER
       },
       message: {
@@ -20,6 +14,17 @@ module.exports = {
       },
       endpoint: {
         type: Sequelize.STRING
+      },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       isActive: {
         allowNull: false,
@@ -42,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('EmpAttendanceAlerts');
+    await queryInterface.dropTable('empAttendanceAlerts');
   }
 };

@@ -2,28 +2,21 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('TimeZones', {
+    await queryInterface.createTable('hrmsTables', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      timeZone: {
+      tableName: {
         type: Sequelize.STRING
       },
-      timeZoneDesc: {
+      pk_Name: {
         type: Sequelize.STRING
       },
-      isActive: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        default: 1
-      },
-      isDeleted: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        default: 0
+      fk_Name: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -36,6 +29,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('TimeZones');
+    await queryInterface.dropTable('hrmsTables');
   }
 };

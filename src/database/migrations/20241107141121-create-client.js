@@ -13,6 +13,17 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      tableId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'hrmsTables',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
+      },
       isActive: {
         allowNull: false,
         type: Sequelize.INTEGER,

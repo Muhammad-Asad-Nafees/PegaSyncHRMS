@@ -6,21 +6,23 @@ import {
     Model,
     Sequelize,
 } from 'sequelize';
-import UserProfile from './userprofile';
 import Company from './company';
 
 class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
     declare id: CreationOptional<number>;
-    declare userRecId: CreationOptional<number>;
     declare hashPassword: CreationOptional<string>;
-    declare profileId: number;
-    declare firstName: CreationOptional<string>;
+    declare firstName:  CreationOptional<string>;
+    declare lastName: CreationOptional<string>;
+    declare displayName:  CreationOptional<string>;
+    declare companyEmail: CreationOptional<string>;
+    declare actualEmail:  CreationOptional<string>;
+    declare phoneNo: CreationOptional<string>;
+    declare zipCode: CreationOptional<string>;
+    declare address: CreationOptional<string>;
+    declare countryId: number;
+    declare city: CreationOptional<string>;
+    declare state: CreationOptional<string>;
     declare companyId: number;
-    declare isActive: CreationOptional<number>;
-    declare isDeleted: CreationOptional<number>;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
-    declare deletedAt: CreationOptional<Date | null>;
 }
 
 
@@ -34,19 +36,51 @@ export function init(sequelize: Sequelize) {
                 primaryKey: true,
                 allowNull: false,
             },
-            userRecId: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
             hashPassword: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            profileId: {
+            firstName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            lastName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            displayName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            companyEmail: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            actualEmail: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            phoneNo: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            zipCode: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            address: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            countryId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            firstName: {
+            city: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            state: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
@@ -54,45 +88,17 @@ export function init(sequelize: Sequelize) {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            isActive: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-                defaultValue: 1,
-            },
-            isDeleted: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-                defaultValue: 0,
-            },
-            createdAt: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: DataTypes.NOW,
-            },
-            updatedAt: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: DataTypes.NOW,
-            },
-            deletedAt: {
-                type: DataTypes.DATE,
-                allowNull: true,
-            },
+           
         },
         {
             sequelize,
             modelName: 'Users',
             tableName: 'users',
-            createdAt: 'createdAt',
-            updatedAt: 'updatedAt',
-            deletedAt: 'deletedAt',
-            paranoid: true,
         }
     );
 }
 
 export function associate() {
-    Users.belongsTo(UserProfile, { foreignKey: 'profileId', as: 'userProfile' });
     Users.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
 }
 

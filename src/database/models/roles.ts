@@ -1,13 +1,14 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import Company from './company';
 
 // Define the Role model class
 class Roles extends Model<InferAttributes<Roles>, InferCreationAttributes<Roles>> {
   declare id: CreationOptional<number>;
   declare role: string;
   declare roleDesc: string;
-  declare locationID: number;
-  declare JobID: number;
-  declare companyID: number;
+  declare locationId: number;
+  declare jobId: number;
+  declare companyId: number;
   declare isActive: CreationOptional<number>;
   declare isDeleted: CreationOptional<number>;
   declare createdAt: CreationOptional<Date>;
@@ -34,15 +35,15 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: true, // `roleDesc` can be nullable
       },
-      locationID: {
+      locationId: {
         type: DataTypes.INTEGER,
         allowNull: true, // `locationID` can be nullable
       },
-      JobID: {
+      jobId: {
         type: DataTypes.INTEGER,
         allowNull: true, // `JobID` can be nullable
       },
-      companyID: {
+      companyId: {
         type: DataTypes.INTEGER,
         allowNull: true, // `companyID` can be nullable
       },
@@ -70,7 +71,7 @@ export function init(sequelize: Sequelize) {
     {
       sequelize,
       modelName: 'Roles', // Sequelize model name
-      tableName: 'Roles', // Corresponding table name in DB
+      tableName: 'roles', // Corresponding table name in DB
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
     }
@@ -79,6 +80,7 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (if necessary)
 export function associate() {
+  Roles.belongsTo(Company, { foreignKey: 'companyId', as: 'company1' });
   // Example associations (if you have relationships with other models):
   // Role.belongsTo(Location, { foreignKey: 'locationID' });
   // Role.belongsTo(Job, { foreignKey: 'JobID' });

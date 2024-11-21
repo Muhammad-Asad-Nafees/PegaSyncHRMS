@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import Company from './company';
 
 // Define the Location model class
 class Location extends Model<InferAttributes<Location>, InferCreationAttributes<Location>> {
@@ -6,10 +7,7 @@ class Location extends Model<InferAttributes<Location>, InferCreationAttributes<
   declare location: string;
   declare locationUID: string;
   declare companyID: string;
-  declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+
 }
 
 export default Location;
@@ -36,31 +34,12 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: true, // `companyID` can be nullable
       },
-      isActive: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1, // Default value for isActive (active)
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
+     
     },
     {
       sequelize,
       modelName: 'Location', // Sequelize model name
-      tableName: 'Locations', // Corresponding table name in DB
+      tableName: 'locations', // Corresponding table name in DB
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
     }
@@ -69,6 +48,7 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (if necessary)
 export function associate() {
+  Location.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
   // Example associations (if you have relationships with other models):
   // Location.belongsTo(Company, { foreignKey: 'companyID' });
   // Location.belongsTo(Profile, { foreignKey: 'profileID' });
