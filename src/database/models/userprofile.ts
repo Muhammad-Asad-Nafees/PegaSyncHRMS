@@ -121,5 +121,5 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (optional)
 export function associate() {
-
+  UserProfile.hasOne(Users, { as: 'user', foreignKey: 'profileId' });
 }

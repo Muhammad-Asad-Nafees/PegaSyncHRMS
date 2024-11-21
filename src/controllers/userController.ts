@@ -1,9 +1,14 @@
 import { Request, Response } from 'express';
-import { Users,UserProfile,Company,Client } from '../database';
+import { Users,UserProfile,Company,Client, RoleAssignment, Roles ,Jobs,Location,LocationDetails} from '../database';
 import { body, check, validationResult } from 'express-validator';
 import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass } from '../lib/tool'
 import { log } from 'console';
+import { Sequelize } from 'sequelize';
 
+const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
+    host: 'localhost', // Replace with your database host
+    dialect: 'mysql',  // Replace with your database dialect (e.g., mysql, postgres, etc.)
+});
 
 export const validateLogin = [
     body('Email').isEmail().withMessage('Valid email required'),
@@ -32,46 +37,89 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        //Get the validation errors (if any)
         
-        const errors = validationResult(req);
+         //const errors = validationResult(req);
     
-        if (!errors.isEmpty()) {
-         res.status(400).json({ status: false, errors: errors.array() });
-        }
-      
+        // if (!errors.isEmpty()) {
+        //  res.status(400).json({ status: false, errors: errors.array() });
+        // }
+        
         const { companyEmail, Password } = req.body;
         
-        // Find user profile by company email
         const userProfile = await UserProfile.findOne({ where: { companyEmail:companyEmail } });
-        console.log(userProfile);
+        
         if (!userProfile) {
              res.status(400).json({ status: false, message: 'User profile not found' });
         }
 
-        // Find the corresponding user record using the profileId from UserProfile
         const user = await Users.findOne({ where: { profileId: userProfile?.profileID } });
 
         if (!user) {
              res.status(400).json({ status: false, message: 'User not found' });
         }
 
-        // Compare the provided password with the stored hash
-        //const isPasswordValid = await Users.findOne(Password, user.hashPassword);
-        //const isPasswordValid = await Users.findOne( Password, user?.hashPassword );
+        const comp = await Company.findOne({ where: { id: user?.companyId } });
+
+        if (!comp) {
+            res.status(400).json({ status: false, message: 'Company not found' });
+        }
+
+        const cli = await Client.findOne({ where: { id: comp?.clientID } });
+
+        if (!cli) {
+            res.status(400).json({ status: false, message: 'Client not found' });
+        }
+
+        const rolA = await RoleAssignment.findOne({ where: { userRecID: user?.id } });
+
+        if (!rolA) {
+            res.status(400).json({ status: false, message: 'RoleAssignment not found' });
+        }
+
+        const rol = await Roles.findOne({ where: { id: rolA?.roleID } });
+
+        if (!rol) {
+            res.status(400).json({ status: false, message: 'Roles not found' });
+        }
+
+        const jobs = await Jobs.findOne({ where: { id: rol?.JobID } });
+
+        if (!jobs) {
+            res.status(400).json({ status: false, message: 'jobs not found' });
+        }
+
+        const loc = await Location.findOne({ where: { id: rol?.locationID } });
+
+        if (!loc) {
+            res.status(400).json({ status: false, message: 'Location not found' });
+        }
+
+        const locdet = await LocationDetails.findOne({ where: { locationID: rol?.locationID } });
+
+        if (!locdet) {
+            res.status(400).json({ status: false, message: 'Location Details not found' });
+        }
 
         const isPasswordValid = await Users.findOne({ where: { hashPassword: Password} });
-        // if (!isPasswordValid) {
-        //     return res.status(400).json({ status: false, message: 'Invalid credentials' });
-        // }
-
-        // If the credentials are valid, return the user data (you can omit sensitive data like password)
+       
+        if (!isPasswordValid) {
+            res.status(400).json({ status: false, message: 'Invalid Credentials' });
+        }
+        
         const userData = {
             id: user?.id,
-            companyEmail: userProfile?.companyEmail,  // Return the companyEmail from UserProfile
+            companyEmail: userProfile?.companyEmail, 
             fullName: userProfile?.displayName,
             companyId: user?.companyId,
+            companyName: comp?.companyName,
+            clientID: comp?.clientID,
+            clientName: cli?.clientName,
             profileId: user?.profileId,
+            jobName: jobs?.jobName,
+            roleName: rol?.role,
+            locationName: loc?.location,
+            latitude: locdet?.latitude,
+            longitude: locdet?.longitude,
             isActive: user?.isActive,
             createdAt: user?.createdAt,
             updatedAt: user?.updatedAt,
@@ -84,11 +132,44 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ status: false, error: 'Failed to login', details: error });
     }
 };
-// export const createUser = async (req: Request, res: Response): Promise<void> => {
-//   try {
-//     const user = await User.create(req.body);
-//     res.status(201).json(user);
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// };
+
+export const registerUser = async (req: Request, res: Response): Promise<void> => {
+    
+    const { firstName, lastName,companyEmail,actualEmail,hiredate,createdby,
+        password,confirmPassword,scheduleID,phoneNo,personalAddress,
+    locationID,zipCode,city,countryID,companyId } = req.body;
+
+    try {
+        if (password !== confirmPassword) {
+            res.status(400).json({ status: false, message: 'Passwords do not match' });
+            return;
+        }
+
+        // Hash the password
+        const hashedPassword = await cryptPass(password);
+        
+        console.log(hashedPassword);
+
+        // Start a transaction
+        const transaction = await sequelize.transaction();
+        const result = await Users.findOne({
+            attributes: [[sequelize.fn('MAX', sequelize.col('profileId')), 'profileId']],
+            raw: true,
+        });
+        const lastProfileId = result?.profileId || 0; // Use 0 if no users exist
+        const newProfileId = lastProfileId + 1;
+        console.log(`Last Profile ID: ${lastProfileId}, New Profile ID: ${newProfileId}`);
+        const user = await Users.create(
+            { 
+                firstName:firstName,     
+                hashPassword: hashedPassword,
+                profileId:newProfileId,
+                companyId:companyId
+            }
+        );
+        res.status(200).json({ status: true, message: 'User Created Successful', data: hashedPassword });
+
+    }catch(error){
+
+    }
+};        

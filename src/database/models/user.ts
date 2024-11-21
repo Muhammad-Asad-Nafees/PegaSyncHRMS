@@ -97,6 +97,8 @@ export function init(sequelize: Sequelize) {
 }
 
 export function associate() {
+    Users.belongsTo(UserProfile, { foreignKey: 'profileId', as: 'userProfile' });
+    Users.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
 }
 
 export default Users;

@@ -6,7 +6,6 @@ class Location extends Model<InferAttributes<Location>, InferCreationAttributes<
   declare location: string;
   declare locationUID: string;
   declare companyID: string;
-  declare profileID: string;
   declare isActive: CreationOptional<number>;
   declare isDeleted: CreationOptional<number>;
   declare createdAt: CreationOptional<Date>;
@@ -36,10 +35,6 @@ export function init(sequelize: Sequelize) {
       companyID: {
         type: DataTypes.STRING,
         allowNull: true, // `companyID` can be nullable
-      },
-      profileID: {
-        type: DataTypes.STRING,
-        allowNull: true, // `profileID` can be nullable
       },
       isActive: {
         type: DataTypes.INTEGER,

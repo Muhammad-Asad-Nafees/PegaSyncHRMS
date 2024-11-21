@@ -115,6 +115,6 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-   LocationDetail.belongsTo(Location, { foreignKey: 'locationID' });
+   //LocationDetail.belongsTo(Location, { foreignKey: 'locationID' });
   // LocationDetail.belongsTo(Profile, { foreignKey: 'profileID' });
 }

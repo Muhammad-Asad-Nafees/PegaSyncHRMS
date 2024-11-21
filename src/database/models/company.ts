@@ -96,5 +96,5 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (if necessary)
 export function associate() {
-  Company.belongsTo(Clients, { foreignKey: 'clientID' }); // Define the association
+  Company.belongsTo(Clients, { foreignKey: 'clientID', as: 'client' });
 }

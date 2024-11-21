@@ -130,7 +130,7 @@ module.exports = {
         },
         {
           role: 'Employee Trex',
-          roleDesc: '67.05685370859214',
+          roleDesc: 'Employee Trex',
           locationID: loc[0].id,
           JobID: 2,
           companyID: companies[0].id,
