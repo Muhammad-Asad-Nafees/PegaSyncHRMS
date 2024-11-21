@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Users,UserProfile,Company,Client, RoleAssignment, Roles ,Jobs,Location,LocationDetails} from '../database';
+import { Users, UserProfile, Company, Client, RoleAssignment, Roles, Jobs, Location, LocationDetails } from '../database';
 import { body, check, validationResult } from 'express-validator';
 import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass } from '../lib/tool'
 import { log } from 'console';
@@ -37,25 +37,38 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        
-         //const errors = validationResult(req);
-    
+
+        //const errors = validationResult(req);
+
         // if (!errors.isEmpty()) {
         //  res.status(400).json({ status: false, errors: errors.array() });
         // }
-        
+
         const { companyEmail, Password } = req.body;
-        
-        const userProfile = await UserProfile.findOne({ where: { companyEmail:companyEmail } });
-        
+
+        const userProfile = await UserProfile.findOne({ where: { companyEmail: companyEmail } });
+
         if (!userProfile) {
-             res.status(400).json({ status: false, message: 'User profile not found' });
+            res.status(400).json({ status: false, message: 'User profile not found' });
         }
 
-        const user = await Users.findOne({ where: { profileId: userProfile?.profileID } });
+        const user = await Users.findOne(
+            {
+                where:
+                {
+                    profileId: userProfile?.profileID
+                },
+                include: [
+                    {
+                        model: Company,
+                        required: true
+                    }
+                ]
+            }
+        );
 
         if (!user) {
-             res.status(400).json({ status: false, message: 'User not found' });
+            res.status(400).json({ status: false, message: 'User not found' });
         }
 
         const comp = await Company.findOne({ where: { id: user?.companyId } });
@@ -100,15 +113,15 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             res.status(400).json({ status: false, message: 'Location Details not found' });
         }
 
-        const isPasswordValid = await Users.findOne({ where: { hashPassword: Password} });
-       
+        const isPasswordValid = await Users.findOne({ where: { hashPassword: Password } });
+
         if (!isPasswordValid) {
             res.status(400).json({ status: false, message: 'Invalid Credentials' });
         }
-        
+
         const userData = {
             id: user?.id,
-            companyEmail: userProfile?.companyEmail, 
+            companyEmail: userProfile?.companyEmail,
             fullName: userProfile?.displayName,
             companyId: user?.companyId,
             companyName: comp?.companyName,
@@ -125,7 +138,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             updatedAt: user?.updatedAt,
         };
 
-         res.status(200).json({ status: true, message: 'Login successful', data: userData });
+        res.status(200).json({ status: true, message: 'Login successful', data: userData });
 
     } catch (error) {
         console.error('Error during login:', error);
@@ -134,10 +147,10 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
-    
-    const { firstName, lastName,companyEmail,actualEmail,hiredate,createdby,
-        password,confirmPassword,scheduleID,phoneNo,personalAddress,
-    locationID,zipCode,city,countryID,companyId } = req.body;
+
+    const { firstName, lastName, companyEmail, actualEmail, hiredate, createdby,
+        password, confirmPassword, scheduleID, phoneNo, personalAddress,
+        locationID, zipCode, city, countryID, companyId } = req.body;
 
     try {
         if (password !== confirmPassword) {
@@ -147,7 +160,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
         // Hash the password
         const hashedPassword = await cryptPass(password);
-        
+
         console.log(hashedPassword);
 
         // Start a transaction
@@ -160,16 +173,16 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const newProfileId = lastProfileId + 1;
         console.log(`Last Profile ID: ${lastProfileId}, New Profile ID: ${newProfileId}`);
         const user = await Users.create(
-            { 
-                firstName:firstName,     
+            {
+                firstName: firstName,
                 hashPassword: hashedPassword,
-                profileId:newProfileId,
-                companyId:companyId
+                profileId: newProfileId,
+                companyId: companyId
             }
         );
         res.status(200).json({ status: true, message: 'User Created Successful', data: hashedPassword });
 
-    }catch(error){
+    } catch (error) {
 
     }
 };        

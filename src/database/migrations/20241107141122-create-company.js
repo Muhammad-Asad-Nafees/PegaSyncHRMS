@@ -11,7 +11,14 @@ module.exports = {
       },
       clientID: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'clients',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       companyName: {
         allowNull: false,

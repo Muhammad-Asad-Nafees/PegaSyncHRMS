@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import Clients from './client';
+import Users from './user';
 
 // Define the Company model class with the provided fields
 class Company extends Model<InferAttributes<Company>, InferCreationAttributes<Company>> {
@@ -97,4 +98,6 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   Company.belongsTo(Clients, { foreignKey: 'clientID', as: 'client' });
+  Company.hasMany(Users, { foreignKey: 'companyId', as: 'company' });
+
 }

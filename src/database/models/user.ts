@@ -53,11 +53,6 @@ export function init(sequelize: Sequelize) {
             companyId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                references: {
-                    model: 'company', // Reference the Company table
-                    key: 'id',
-                },
-                onDelete: 'CASCADE',
             },
             isActive: {
                 type: DataTypes.INTEGER,
