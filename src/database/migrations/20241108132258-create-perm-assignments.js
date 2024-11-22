@@ -30,12 +30,10 @@ module.exports = {
         defaultValue: 12
       },
       isActive: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         defaultValue: 1
       },
       isDeleted: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         defaultValue: 0
       },

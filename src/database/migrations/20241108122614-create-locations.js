@@ -87,18 +87,15 @@ module.exports = {
       },
       tableId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        default: 7
+        defaultValue: 7
       },
       isActive: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       isDeleted: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        default: 0
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,
