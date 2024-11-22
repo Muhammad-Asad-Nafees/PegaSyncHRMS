@@ -1,12 +1,14 @@
 import { Router } from 'express';
-import { getUsers,loginUser, registerUser,validateLogin} from '../controllers/userController';
-import { validate } from 'uuid';
+import { getUsers, loginUser, registerUser } from '../controllers/userController';
+import { authenticateToken } from '../middleware'; // Import the middleware
 
 const router = Router();
 
-router.get('/users', getUsers);
-router.post('/login', validateLogin, loginUser);
+// Public Routes
+router.post('/login', loginUser);
 
-router.post('/addusers', validateLogin, registerUser);
+// Protected Routes
+router.get('/users', authenticateToken, getUsers);
+router.post('/addusers', authenticateToken, registerUser);
 
 export default router;

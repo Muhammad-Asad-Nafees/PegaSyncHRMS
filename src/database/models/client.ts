@@ -67,5 +67,5 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (optional)
 export function associate() {
-  Clients.hasMany(Company, { foreignKey: 'clientID' });
+  Clients.hasMany(Company, { foreignKey: 'clientId' });
 }

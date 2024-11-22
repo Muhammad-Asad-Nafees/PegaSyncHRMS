@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Users, Company, Client, RoleAssignment, Roles, Jobs, Location } from '../database';
 import { body, check, validationResult } from 'express-validator';
-import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass,hashPass } from '../lib/tool'
+import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass,hashPass,generateToken } from '../lib/tool'
 import { log } from 'console';
 import { Sequelize } from 'sequelize';
 
@@ -85,7 +85,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         } catch (error) {
          res.status(401).json({ status: false, message: 'Invalid password' });
         }
-
+        const token = generateToken(user?.id.toString()!, user?.companyId.toString()!);
         // Construct response data
         const userData = {
             id: user?.id,
@@ -96,6 +96,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             companyName: user?.company.companyName,
              //@ts-ignore
             clientName: user?.company?.client.clientName,
+            jwtToken: token
         };
 
         res.status(200).json({ status: true, message: 'Login successful', data: userData });
@@ -108,7 +109,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
 
-    const { firstName, lastName, companyEmail, actualEmail, hiredate, createdby,
+    const { firstName, lastName,displayName, companyEmail, actualEmail, hiredate, createdby,
         password, confirmPassword, scheduleID, phoneNo, personalAddress,
         locationID, zipCode, city, countryID, companyId ,jobId} = req.body;
 
@@ -136,10 +137,13 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
             {
                 firstName: firstName,
                 lastName: lastName,
+                displayName:displayName,
                 companyEmail:companyEmail,
                 actualEmail:actualEmail,
                 phoneNo:phoneNo,
                 address:personalAddress,
+                zipCode:zipCode,
+                city:city,
                 countryId:countryID,
                 hashPassword: hashedPassword,
                 companyId: companyId

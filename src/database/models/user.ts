@@ -7,6 +7,7 @@ import {
     Sequelize,
 } from 'sequelize';
 import Company from './company';
+import RoleAssignment from './roleassignment';
 
 class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
     declare id: CreationOptional<number>;
@@ -100,6 +101,8 @@ export function init(sequelize: Sequelize) {
 
 export function associate() {
     Users.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
+
+    Users.hasMany(RoleAssignment, { foreignKey: 'userRecID', as: 'users' });
 }
 
 export default Users;

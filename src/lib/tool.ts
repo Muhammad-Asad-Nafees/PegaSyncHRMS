@@ -1,6 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET || 'asad1234';
+
 
 type ValidationError = {
     msg: string;
@@ -94,6 +101,14 @@ const hashPass = (password?: string): Promise<string | undefined> =>
         }
     });
 
+// Generate token
+const generateToken = (userId: string, companyId: string) => {
+    return jwt.sign(
+        { userId, companyId }, // Payload
+        JWT_SECRET, // Secret key
+    );
+};
+
 export {
     dispatchSuc,
     dispatchErr,
@@ -103,4 +118,5 @@ export {
     cryptPass,
     comparePass,
     hashPass,
+    generateToken,
 };

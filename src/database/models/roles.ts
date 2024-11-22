@@ -80,7 +80,7 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (if necessary)
 export function associate() {
-  Roles.belongsTo(Company, { foreignKey: 'companyId', as: 'company1' });
+  Roles.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
   // Example associations (if you have relationships with other models):
   // Role.belongsTo(Location, { foreignKey: 'locationID' });
   // Role.belongsTo(Job, { foreignKey: 'JobID' });
