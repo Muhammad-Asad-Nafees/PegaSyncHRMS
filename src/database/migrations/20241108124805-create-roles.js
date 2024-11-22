@@ -27,7 +27,7 @@ module.exports = {
         onDelete: 'cascade'
       },
       jobId: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
         foreignKey: true,
         references: {
@@ -49,25 +49,18 @@ module.exports = {
         onDelete: 'cascade'
       },
       tableId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        foreignKey: true,
-        references: {
-          model: 'hrmsTables',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade'
+        defaultValue: 9
       },
       isActive: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       isDeleted: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        default: 0
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

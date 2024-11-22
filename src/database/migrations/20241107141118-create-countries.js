@@ -16,33 +16,25 @@ module.exports = {
         type: Sequelize.STRING
       },
       tableId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        foreignKey: true,
-        references: {
-          model: 'hrmsTables',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade'
+        defaultValue: 1
       },
       isActive: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       isDeleted: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        default: 0
+        defaultValue: 0
       },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+        
       }
     });
   },

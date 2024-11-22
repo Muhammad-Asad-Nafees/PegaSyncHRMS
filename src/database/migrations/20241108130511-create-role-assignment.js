@@ -18,7 +18,8 @@ module.exports = {
           key: 'id',
         },
         onUpdate: 'cascade',
-        onDelete: 'cascade'
+        onDelete: 'cascade',
+        default: 10
       },
       userRecId: {
         allowNull: false,
@@ -32,25 +33,16 @@ module.exports = {
         onDelete: 'cascade'
       },
       tableId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        foreignKey: true,
-        references: {
-          model: 'hrmsTables',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade'
+        defaultValue:10
       },
       isActive: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       isDeleted: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        default: 0
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

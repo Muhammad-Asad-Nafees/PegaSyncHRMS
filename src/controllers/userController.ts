@@ -101,7 +101,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({ status: true, message: 'Login successful', data: userData });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(500).json({ status: false, error: 'Failed to login', details: error });
+        res.status(500).json({ status: false, error: 'Failed to login', data: error });
     }
 };
 
@@ -110,11 +110,11 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     const { firstName, lastName, companyEmail, actualEmail, hiredate, createdby,
         password, confirmPassword, scheduleID, phoneNo, personalAddress,
-        locationID, zipCode, city, countryID, companyId } = req.body;
+        locationID, zipCode, city, countryID, companyId ,jobId} = req.body;
 
     try {
         if (password !== confirmPassword) {
-            res.status(400).json({ status: false, message: 'Passwords do not match' });
+            res.status(400).json({ status: false, message: 'Passwords do not match', data:'' });
             return;
         }
 
@@ -122,6 +122,15 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const hashedPassword = await cryptPass(password);
 
         console.log(hashedPassword);
+
+        const role = await Roles.findOne({
+            where: { locationId : locationID,
+                jobId:jobId,
+                companyId:companyId 
+            },
+        });
+
+        console.log(role);
 
         const user = await Users.create(
             {
@@ -136,6 +145,15 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
                 companyId: companyId
             }
         );
+
+        const userId = user.id;
+
+        const roleAssignment = await RoleAssignment.create({
+            userRecID: userId,
+            roleID: role?.id! // Assuming you have a role ID to assign
+        });
+
+
         res.status(200).json({ status: true, message: 'User Created Successful', data: user });
 
     } catch (error) {

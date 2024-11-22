@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       countryId: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
         foreignKey: true,
         references: {
@@ -41,7 +41,7 @@ module.exports = {
           key: 'id',
         },
         onUpdate: 'cascade',
-        onDelete: 'cascade'
+        onDelete: 'cascade',
       },
       city: {
         allowNull: true,
@@ -52,25 +52,19 @@ module.exports = {
         type: Sequelize.STRING
       },
       tableId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        foreignKey: true,
-        references: {
-          model: 'hrmsTables',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade'
+        allowNull: false,
+        defaultValue:3
       },
       isActive: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       isDeleted: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        default: 0
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

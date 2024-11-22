@@ -86,15 +86,9 @@ module.exports = {
         default: 1
       },
       tableId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        foreignKey: true,
-        references: {
-          model: 'hrmsTables',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade'
+        allowNull: false,
+        default: 7
       },
       isActive: {
         allowNull: false,

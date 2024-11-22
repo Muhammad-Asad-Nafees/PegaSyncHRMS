@@ -7,10 +7,6 @@ class RoleAssignment extends Model<InferAttributes<RoleAssignment>, InferCreatio
   declare id: CreationOptional<number>;
   declare roleID: number;
   declare userRecID: number;
-  declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 export default RoleAssignment;
@@ -43,33 +39,11 @@ export function init(sequelize: Sequelize) {
         },
         onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
-      isActive: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1, // Default value for isActive (active)
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
     },
     {
       sequelize,
       modelName: 'RoleAssignments', // Sequelize model name
       tableName: 'RoleAssignments', // Corresponding table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
     }
   );
 }
