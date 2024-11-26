@@ -1,16 +1,13 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import EmpAttendanceProfile from './empattendanceprofile';
 
 // Define the EmpAttendanceDetail model class
 class EmpAttendanceDetail extends Model<InferAttributes<EmpAttendanceDetail>, InferCreationAttributes<EmpAttendanceDetail>> {
   declare id: CreationOptional<number>;
-  declare profileID: number;
-  declare typeID: number;
+  declare profileId: number;
+  declare typeId: number;
   declare typeDateTime: number;
-  declare isMissedPunch: number;
-  declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+  declare activeStatus: number;
 }
 
 export default EmpAttendanceDetail;
@@ -25,11 +22,11 @@ export function init(sequelize: Sequelize) {
         primaryKey: true,
         allowNull: false,
       },
-      profileID: {
+      profileId: {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming profileID is required
       },
-      typeID: {
+      typeId: {
         type: DataTypes.STRING,
         allowNull: false, // Assuming typeID is required
       },
@@ -37,44 +34,21 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming typeDateTime is required
       },
-      isMissedPunch: {
+      activeStatus: {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming isMissedPunch is required
       },
-      isActive: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1, // Default value for isActive (active)
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
+     
     },
     {
       sequelize,
       modelName: 'EmpAttendanceDetail', // Sequelize model name
       tableName: 'EmpAttendanceDetails', // Corresponding table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
     }
   );
 }
 
 // Define associations (if necessary)
 export function associate() {
-  // Example associations (if you have relationships with other models):
-  // EmpAttendanceDetail.belongsTo(Profile, { foreignKey: 'profileID' });
-  // EmpAttendanceDetail.belongsTo(AttendanceType, { foreignKey: 'typeID' });
+  EmpAttendanceDetail.belongsTo(EmpAttendanceProfile, { foreignKey: 'profileId',as : 'attendanceProfileId' });
 }

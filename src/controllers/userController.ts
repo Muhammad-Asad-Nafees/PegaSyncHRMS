@@ -24,6 +24,7 @@ export const validateLogin = [
  * @returns {Promise<void>}
  */
 
+
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { companyEmail, password } = req.body;

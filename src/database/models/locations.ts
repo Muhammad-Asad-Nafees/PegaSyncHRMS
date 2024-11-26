@@ -2,6 +2,8 @@ import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCr
 import Company from './company';
 import Roles from './roles';
 import EmpScheduleMaster from './empschedulemaster';
+import EmpAttendanceDetail from './empattendancedetails';
+import EmpAttendanceProfile from './empattendanceprofile';
 
 // Define the Location model class
 class Location extends Model<InferAttributes<Location>, InferCreationAttributes<Location>> {
@@ -64,4 +66,6 @@ export function associate() {
   Location.hasMany(Roles, { foreignKey: 'locationId', as: 'roles' });
 
   Location.hasMany(EmpScheduleMaster, { foreignKey: 'locationId', as: 'submitBylocation' });
+
+  Location.hasMany(EmpAttendanceProfile, { foreignKey: 'locationId', as: 'attendancelocation' });
 }

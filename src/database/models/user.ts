@@ -9,6 +9,8 @@ import {
 import Company from './company';
 import RoleAssignment from './roleassignment';
 import EmpScheduleMaster from './empschedulemaster';
+import EmpAttendanceProfile from './empattendanceprofile';
+import EmpAttendanceDetail from './empattendancedetails';
 
 class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
     declare id: CreationOptional<number>;
@@ -107,6 +109,9 @@ export function associate() {
 
     Users.hasMany(EmpScheduleMaster, { foreignKey: 'submittedBy', as: 'submittedByUser' });
     Users.hasMany(EmpScheduleMaster, { foreignKey: 'requestedFor', as: 'requestedForUser' });
+
+    Users.hasMany(EmpAttendanceProfile, { foreignKey: 'userRecId', as: 'attendanceUser' });
+   
 }
 
 export default Users;

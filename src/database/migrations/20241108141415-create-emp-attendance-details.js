@@ -34,6 +34,9 @@ module.exports = {
       typeDateTime: {
         type: Sequelize.STRING
       },
+      activeStatus: {
+        type: Sequelize.INTEGER
+      },
       isMissedPunch: {
         type: Sequelize.INTEGER
       },

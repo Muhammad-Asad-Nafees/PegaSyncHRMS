@@ -11,7 +11,12 @@ import {
     PermAssignments,
     Location,
     EmpScheduling,
-    Country
+    Country,
+    EmpAttendanceProfile,
+    EmpAttendanceDetails,
+    EmpAttendanceTypes,
+    EmpAttendanceCoordinates,
+    EmpAttendanceAlerts
 
 } from './models'
 
@@ -46,6 +51,11 @@ function initModels() {
     models.initPermAssignments(sequelize);
     models.initEmpScheduling(sequelize);
     models.initCountry(sequelize);
+    models.initEmpAttendanceProfile(sequelize);
+    models.initEmpAttendanceDetails(sequelize);
+    models.initEmpAttendanceTypes(sequelize);
+    models.initEmpAttendanceCoordinates(sequelize);
+    models.initEmpAttendanceAlerts(sequelize);
 
 }
 
@@ -61,6 +71,11 @@ function associateModels() {
     models.associatePermAssignments();
     models.associateEmpScheduling();
     models.associateCountry();
+    models.associateEmpAttendanceProfile();
+    models.associateEmpAttendanceDetails();
+    models.associateEmpAttendanceTypes();
+    models.associateEmpAttendanceCoordinates();
+    models.associateEmpAttendanceAlerts();
 }
 
 initModels()
@@ -78,5 +93,10 @@ export {
     PermAssignments,
     Location,
     EmpScheduling,
-    Country
+    Country,
+    EmpAttendanceProfile,
+    EmpAttendanceDetails,
+    EmpAttendanceTypes,
+    EmpAttendanceCoordinates,
+    EmpAttendanceAlerts
 }

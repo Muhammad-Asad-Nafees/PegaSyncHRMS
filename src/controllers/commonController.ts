@@ -6,6 +6,7 @@ import { log } from 'console';
 import { Sequelize } from 'sequelize';
 import PermAssignment from '../database/models/permassignments';
 import Permissions from '../database/models/permissions';
+import Job from '../database/models/jobs';
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
         if (!Users) {
@@ -97,9 +98,7 @@ export const getCountries = async (req: Request, res: Response): Promise<void> =
             throw new Error('Countries model is not initialized.');
         }
        // const users = await Users.findAll({});
-       const countries = await Country.findAll({
-        
-    });
+       const countries = await Country.findAll();
         res.status(200).json({ status: true, data: countries });
     } catch (error) {
         console.error('Error fetching countries:', error);
@@ -112,12 +111,40 @@ export const getCompany = async (req: Request, res: Response): Promise<void> => 
             throw new Error('Company model is not initialized.');
         }
        // const users = await Users.findAll({});
-       const user = await Company.findAll({
-        
-    });
+       const user = await Company.findAll();
         res.status(200).json({ status: true, data: user });
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).send({ error: 'Failed to fetch users', details: error });
+    }
+};
+
+export const getLocations = async (req: Request, res: Response): Promise<void> => {
+    try {
+        if (!Location) {
+            throw new Error('Location model is not initialized.');
+        }
+       // const users = await Users.findAll({});
+       const user = await Location.findAll();
+        res.status(200).json({ status: true, data: user });
+    } catch (error) {
+        console.error('Error fetching Location:', error);
+        res.status(500).send({ error: 'Failed to fetch Location', details: error });
+    }
+};
+
+export const getJobs = async (req: Request, res: Response): Promise<void> => {
+    try {
+        if (!Job) {
+            throw new Error('Job model is not initialized.');
+        }
+       // const users = await Users.findAll({});
+       const user = await Job.findAll({
+        
+    });
+        res.status(200).json({ status: true, data: user });
+    } catch (error) {
+        console.error('Error fetching Job:', error);
+        res.status(500).send({ error: 'Failed to fetch Job', details: error });
     }
 };
