@@ -5,8 +5,8 @@ import Users from './user';
 // Define the RoleAssignment model class
 class RoleAssignment extends Model<InferAttributes<RoleAssignment>, InferCreationAttributes<RoleAssignment>> {
   declare id: CreationOptional<number>;
-  declare roleID: number;
-  declare userRecID: number;
+  declare roleId: number;
+  declare userRecId: number;
 }
 
 export default RoleAssignment;
@@ -21,7 +21,7 @@ export function init(sequelize: Sequelize) {
         primaryKey: true,
         allowNull: false,
       },
-      roleID: { // Foreign key column
+      roleId: { // Foreign key column
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -30,7 +30,7 @@ export function init(sequelize: Sequelize) {
         },
         onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
-      userRecID: { // Foreign key column
+      userRecId: { // Foreign key column
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -43,7 +43,7 @@ export function init(sequelize: Sequelize) {
     {
       sequelize,
       modelName: 'RoleAssignments', // Sequelize model name
-      tableName: 'RoleAssignments', // Corresponding table name in DB
+      tableName: 'roleAssignments', // Corresponding table name in DB
     }
   );
 }
@@ -51,6 +51,7 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-   RoleAssignment.belongsTo(Roles, { foreignKey: 'roleID',as : 'roles' });
-   RoleAssignment.belongsTo(Users, { foreignKey: 'userRecID', as : 'users' });
+   RoleAssignment.belongsTo(Roles, { foreignKey: 'roleId',as : 'role' });
+   RoleAssignment.belongsTo(Users, { foreignKey: 'userRecId', as : 'user' });
+
 }

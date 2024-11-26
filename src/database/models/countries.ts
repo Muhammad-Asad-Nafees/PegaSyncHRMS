@@ -55,7 +55,7 @@ export function init(sequelize: Sequelize) {
     {
       sequelize,
       modelName: 'Country', // Model name in Sequelize
-      tableName: 'Countries', // Table name in DB
+      tableName: 'countries', // Table name in DB
       createdAt: 'createdAt',
       updatedAt: 'updatedAt',
     }

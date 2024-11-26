@@ -1,12 +1,16 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import Company from './company';
+import Roles from './roles';
+import EmpScheduleMaster from './empschedulemaster';
 
 // Define the Location model class
 class Location extends Model<InferAttributes<Location>, InferCreationAttributes<Location>> {
   declare id: CreationOptional<number>;
   declare location: string;
   declare locationUID: string;
-  declare companyID: string;
+  declare latitude: string;
+  declare longitude: string;
+  declare companyId: string;
 
 }
 
@@ -30,7 +34,15 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: true, // `locationUID` can be nullable
       },
-      companyID: {
+      latitude: {
+        type: DataTypes.STRING,
+        allowNull: true, // `location` can be nullable
+      },
+      longitude: {
+        type: DataTypes.STRING,
+        allowNull: true, // `location` can be nullable
+      },
+      companyId: {
         type: DataTypes.STRING,
         allowNull: true, // `companyID` can be nullable
       },
@@ -49,7 +61,7 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   Location.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
-  // Example associations (if you have relationships with other models):
-  // Location.belongsTo(Company, { foreignKey: 'companyID' });
-  // Location.belongsTo(Profile, { foreignKey: 'profileID' });
+  Location.hasMany(Roles, { foreignKey: 'locationId', as: 'roles' });
+
+  Location.hasMany(EmpScheduleMaster, { foreignKey: 'locationId', as: 'submitBylocation' });
 }

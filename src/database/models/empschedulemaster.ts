@@ -1,21 +1,19 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import Users from './user';
+import Location  from './locations';
 
 // Define the EmpScheduleMaster model class
 class EmpScheduleMaster extends Model<InferAttributes<EmpScheduleMaster>, InferCreationAttributes<EmpScheduleMaster>> {
   declare id: CreationOptional<number>;
   declare submittedBy: number;
   declare requestedFor: number;
-  declare locationID: number;
+  declare locationId: number;
   declare startDate: Date;
   declare endDate: Date;
   declare startTime: string;
   declare endTime: string;
-  declare inNight: number;
+  declare isNight: number;
   declare totalHours: string;
-  declare isActive: number;
-  declare isDeleted: number;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 export default EmpScheduleMaster;
@@ -38,7 +36,7 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming requestedFor is mandatory
       },
-      locationID: {
+      locationId: {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming locationID is mandatory
       },
@@ -58,48 +56,26 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.TIME,
         allowNull: false,
       },
-      inNight: {
+      isNight: {
         type: DataTypes.INTEGER,
-        allowNull: true, // Assuming inNight can be nullable
+        defaultValue: 0,
       },
       totalHours: {
         type: DataTypes.STRING,
         allowNull: true, // Assuming totalHours can be nullable
-      },
-      isActive: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1, // Default to active
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default to not deleted
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
       },
     },
     {
       sequelize,
       modelName: 'EmpScheduleMaster', // Model name in Sequelize
       tableName: 'EmpScheduleMasters', // Table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
     }
   );
 }
 
 // Define associations (if necessary)
 export function associate() {
-  // Example associations (if you have relationships with other models):
-  // EmpScheduleMaster.belongsTo(User, { foreignKey: 'submittedBy' });
-  // EmpScheduleMaster.belongsTo(User, { foreignKey: 'requestedFor' });
+  EmpScheduleMaster.belongsTo(Users, { foreignKey: 'submittedBy',as : 'submittedByUser' });
+  EmpScheduleMaster.belongsTo(Users, { foreignKey: 'requestedFor',as : 'requestedForUser' });
+  EmpScheduleMaster.belongsTo(Location, { foreignKey: 'locationId',as : 'submitBylocation' });
 }

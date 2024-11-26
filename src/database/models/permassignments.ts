@@ -6,12 +6,8 @@ import Permissions from './permissions';
 // Define the PermAssignment model class
 class PermAssignment extends Model<InferAttributes<PermAssignment>, InferCreationAttributes<PermAssignment>> {
   declare id: CreationOptional<number>;
-  declare permID: number;
-  declare roleID: number;
-  declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+  declare permId: number;
+  declare roleId: number;
 }
 
 export default PermAssignment;
@@ -26,7 +22,7 @@ export function init(sequelize: Sequelize) {
         primaryKey: true,
         allowNull: false,
       },
-      permID: { // Foreign key column
+      permId: { // Foreign key column
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -35,7 +31,7 @@ export function init(sequelize: Sequelize) {
         },
         onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
-      roleID: { // Foreign key column
+      roleId: { // Foreign key column
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -44,33 +40,12 @@ export function init(sequelize: Sequelize) {
         },
         onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
       },
-      isActive: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1, // Default value for isActive (active)
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
+     
     },
     {
       sequelize,
       modelName: 'PermAssignment', // Sequelize model name
-      tableName: 'PermAssignments', // Corresponding table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
+      tableName: 'permAssignments', // Corresponding table name in DB
     }
   );
 }
@@ -78,6 +53,6 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-  PermAssignment.belongsTo(Permissions, { foreignKey: 'permID' });
-  PermAssignment.belongsTo(Roles, { foreignKey: 'roleID' });
+  PermAssignment.belongsTo(Roles, { foreignKey: 'roleId',as : 'role' });
+  PermAssignment.belongsTo(Permissions, { foreignKey: 'permId', as : 'permission' });
 }

@@ -1,5 +1,9 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import Company from './company';
+import Job from './jobs';
+import location from './locations';
+import RoleAssignment from './roleassignment';
+import PermAssignment from './permassignments';
 
 // Define the Role model class
 class Roles extends Model<InferAttributes<Roles>, InferCreationAttributes<Roles>> {
@@ -9,10 +13,6 @@ class Roles extends Model<InferAttributes<Roles>, InferCreationAttributes<Roles>
   declare locationId: number;
   declare jobId: number;
   declare companyId: number;
-  declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 export default Roles;
@@ -47,26 +47,7 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: true, // `companyID` can be nullable
       },
-      isActive: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1, // Default value for isActive (active)
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
+   
     },
     {
       sequelize,
@@ -81,6 +62,12 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   Roles.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
+  Roles.belongsTo(Job, { foreignKey: 'jobId', as: 'job' });
+  Roles.belongsTo(location, { foreignKey: 'locationId', as: 'location' });
+
+  
+  Roles.hasMany(RoleAssignment, { foreignKey: 'roleId', as: 'roleAssignments' });
+  Roles.hasMany(PermAssignment, { foreignKey: 'roleId', as: 'permAssignments' });
   // Example associations (if you have relationships with other models):
   // Role.belongsTo(Location, { foreignKey: 'locationID' });
   // Role.belongsTo(Job, { foreignKey: 'JobID' });

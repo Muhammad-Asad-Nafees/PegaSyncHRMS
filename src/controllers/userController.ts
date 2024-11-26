@@ -4,7 +4,8 @@ import { body, check, validationResult } from 'express-validator';
 import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass,hashPass,generateToken } from '../lib/tool'
 import { log } from 'console';
 import { Sequelize } from 'sequelize';
-
+import PermAssignment from '../database/models/permassignments';
+import Permissions from '../database/models/permissions';
 const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
     host: 'localhost', // Replace with your database host
     dialect: 'mysql',  // Replace with your database dialect (e.g., mysql, postgres, etc.)
@@ -22,54 +23,66 @@ export const validateLogin = [
  *
  * @returns {Promise<void>}
  */
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
-    try {
-        if (!Users) {
-            throw new Error('Users model is not initialized.');
-        }
-       // const users = await Users.findAll({});
-       const user = await Users.findOne({
-        include: [
-            {
-                model: Company,
-                as: 'company', // Must match the alias in `Users.belongsTo`
-                include: [
-                    {
-                        model: Client,
-                        as: 'client', // Must match the alias in `Company.belongsTo`
-                    },
-                ],
-            },
-        ],
-    });
-        res.status(200).json({ status: true, data: user });
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).send({ error: 'Failed to fetch users', details: error });
-    }
-};
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { companyEmail, Password } = req.body;
-
+        const { companyEmail, password } = req.body;
+ 
         // Check if email exists in the database
         const user = await Users.findOne({
             where: { companyEmail },
             include: [
                 {
-                    model: Company,
-                    as: 'company', // Must match the alias in `Users.belongsTo`
+                    model: RoleAssignment,
+                    as: 'roleAssignments', 
                     include: [
                         {
-                            model: Client,
-                            as: 'client', // Must match the alias in `Company.belongsTo`
+                            model: Roles,
+                            as: 'role', 
+                            include: [
+                                {
+                                    model: PermAssignment,
+                                    as: 'permAssignments', // Include the PermAssignment table
+                                    include:[
+                                         {
+                                            model:Permissions,
+                                            as : 'permission'    
+                                         }   
+                                    ]
+                                },
+                                {
+                                    model: Jobs,
+                                    as: 'job', 
+                                },
+                                {
+                                    model: Location,
+                                    as: 'location', 
+                                },
+                                {
+                                    model: Company,
+                                    as: 'company', 
+                                    include:[
+                                    {
+                                        model: Client,
+                                        as: 'client', 
+                                    },
+                                ]
+                                },
+                            ],
                         },
                     ],
-                   
                 },
             ],
         });
+        // Extract permissions as a comma-separated string
+        //@ts-ignore
+        const permissions = user?.roleAssignments?.flatMap(roleAssignment =>  roleAssignment.role?.permAssignments?.map(permAssignment => {
+                const permission = permAssignment.permission;
+                return permission ? { id: permission.id, name: permission.permission } : null; // Create object with id and name
+            })
+        ).filter(Boolean);// Filter out undefined or null values
+
+       // const permissionString = permissions?.join(',') || '';
 
         if (!user) {
          res.status(400).json({ status: false, message: 'Email not found' });
@@ -81,11 +94,12 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
         // Check if the password is valid
         try {
-            await comparePass(Password, user?.hashPassword!);
+            await comparePass(password, user?.hashPassword!);
         } catch (error) {
          res.status(401).json({ status: false, message: 'Invalid password' });
         }
         const token = generateToken(user?.id.toString()!, user?.companyId.toString()!);
+
         // Construct response data
         const userData = {
             id: user?.id,
@@ -93,9 +107,20 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             fullName: user?.displayName,
             companyId : user?.companyId,
             //@ts-ignore
-            companyName: user?.company.companyName,
+            roleName: user?.roleAssignments[0].role?.role,
              //@ts-ignore
-            clientName: user?.company?.client.clientName,
+            jobName: user?.roleAssignments[0].role?.job?.jobName,
+            //@ts-ignore
+            locationName: user?.roleAssignments[0].role?.location?.location,
+            //@ts-ignore
+            latitude: user?.roleAssignments[0].role?.location?.latitude,
+            //@ts-ignore
+            longitude: user?.roleAssignments[0].role?.location?.longitude,
+            //@ts-ignore
+            companyName: user?.roleAssignments[0].role?.company?.companyName,
+            //@ts-ignore
+            clientName: user?.roleAssignments[0].role?.company?.client.clientName,
+            permissions:permissions,
             jwtToken: token
         };
 
@@ -153,8 +178,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const userId = user.id;
 
         const roleAssignment = await RoleAssignment.create({
-            userRecID: userId,
-            roleID: role?.id! // Assuming you have a role ID to assign
+            userRecId: userId,
+            roleId: role?.id! // Assuming you have a role ID to assign
         });
 
 

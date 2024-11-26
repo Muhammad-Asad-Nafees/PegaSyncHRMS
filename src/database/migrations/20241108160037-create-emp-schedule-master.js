@@ -54,7 +54,7 @@ module.exports = {
       endTime: {
         type: Sequelize.TIME
       },
-      inNight: {
+      isNight: {
         type: Sequelize.INTEGER
       },
       totalHours: {

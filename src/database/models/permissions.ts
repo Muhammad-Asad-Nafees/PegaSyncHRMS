@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import PermAssignment from './permassignments';
 
 // Define the Permission model class
 class Permission extends Model<InferAttributes<Permission>, InferCreationAttributes<Permission>> {
@@ -6,10 +7,6 @@ class Permission extends Model<InferAttributes<Permission>, InferCreationAttribu
   declare permission: string;
   declare permissionDesc: string;
   declare companyID: number;
-  declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 export default Permission;
@@ -36,33 +33,11 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: true, // `companyID` can be nullable
       },
-      isActive: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1, // Default value for isActive (active)
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
     },
     {
       sequelize,
       modelName: 'Permission', // Sequelize model name
-      tableName: 'Permissions', // Corresponding table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
+      tableName: 'permissions', // Corresponding table name in DB
     }
   );
 }
@@ -70,5 +45,5 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-  // Permission.belongsTo(Company, { foreignKey: 'companyID' });
+  Permission.hasMany(PermAssignment, { foreignKey: 'permId', as: 'permAssignments' });
 }

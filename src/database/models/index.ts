@@ -10,3 +10,7 @@ export { default as Roles, associate as associateRoles, init as initRoles } from
 export { default as RoleAssignment, associate as associateRoleAssignment, init as initRoleAssignment } from './roleassignment';
 export { default as Permissions, associate as associatePermissions, init as initPermissions } from './permissions';
 export { default as PermAssignments, associate as associatePermAssignments, init as initPermAssignments } from './permassignments';
+
+export { default as EmpScheduling, associate as associateEmpScheduling, init as initEmpScheduling } from './empschedulemaster';
+
+export { default as Country, associate as associateCountry, init as initCountry } from './countries';

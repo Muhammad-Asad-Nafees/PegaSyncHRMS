@@ -1,8 +1,10 @@
 import express from 'express';
 import userRoutes from './routes/v1';
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors()); 
 // Middleware to parse JSON
 app.use(express.json());
 

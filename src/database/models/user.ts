@@ -8,6 +8,7 @@ import {
 } from 'sequelize';
 import Company from './company';
 import RoleAssignment from './roleassignment';
+import EmpScheduleMaster from './empschedulemaster';
 
 class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>> {
     declare id: CreationOptional<number>;
@@ -102,7 +103,10 @@ export function init(sequelize: Sequelize) {
 export function associate() {
     Users.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
 
-    Users.hasMany(RoleAssignment, { foreignKey: 'userRecID', as: 'users' });
+    Users.hasMany(RoleAssignment, { foreignKey: 'userRecId', as: 'roleAssignments' });
+
+    Users.hasMany(EmpScheduleMaster, { foreignKey: 'submittedBy', as: 'submittedByUser' });
+    Users.hasMany(EmpScheduleMaster, { foreignKey: 'requestedFor', as: 'requestedForUser' });
 }
 
 export default Users;

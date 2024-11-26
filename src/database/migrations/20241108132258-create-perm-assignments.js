@@ -10,9 +10,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       permId: {
-        type: Sequelize.INTEGER,
         allowNull: false,
-        default: 12
+        type: Sequelize.INTEGER,
+        foreignKey: true,
+        references: {
+          model: 'permissions',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade'
       },
       roleId: {
         allowNull: false,

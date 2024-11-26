@@ -9,7 +9,9 @@ import {
     RoleAssignment,
     Permissions,
     PermAssignments,
-    Location
+    Location,
+    EmpScheduling,
+    Country
 
 } from './models'
 
@@ -42,7 +44,9 @@ function initModels() {
     models.initRoleAssignment(sequelize);
     models.initPermissions(sequelize);
     models.initPermAssignments(sequelize);
-   
+    models.initEmpScheduling(sequelize);
+    models.initCountry(sequelize);
+
 }
 
 function associateModels() {
@@ -55,7 +59,8 @@ function associateModels() {
     models.associateRoleAssignment();
     models.associatePermissions();
     models.associatePermAssignments();
-
+    models.associateEmpScheduling();
+    models.associateCountry();
 }
 
 initModels()
@@ -71,5 +76,7 @@ export {
     RoleAssignment,
     Permissions,
     PermAssignments,
-    Location
+    Location,
+    EmpScheduling,
+    Country
 }
