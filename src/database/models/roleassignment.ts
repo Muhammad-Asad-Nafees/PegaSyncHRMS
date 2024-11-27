@@ -7,6 +7,7 @@ class RoleAssignment extends Model<InferAttributes<RoleAssignment>, InferCreatio
   declare id: CreationOptional<number>;
   declare roleId: number;
   declare userRecId: number;
+  declare isActive: CreationOptional<number>;
 }
 
 export default RoleAssignment;
@@ -38,6 +39,10 @@ export function init(sequelize: Sequelize) {
           key: 'id',      // Foreign key references Users.id
         },
         onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
+      },
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
       },
     },
     {

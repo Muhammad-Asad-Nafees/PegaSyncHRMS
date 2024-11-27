@@ -13,6 +13,7 @@ class Company extends Model<InferAttributes<Company>, InferCreationAttributes<Co
   declare zipCode: string;
   declare city: string;
   declare countryID: number;
+  declare isActive: CreationOptional<number>;
 }
 
 export default Company;
@@ -56,7 +57,10 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+      },
     },
     {
       sequelize,

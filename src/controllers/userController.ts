@@ -31,41 +31,67 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
  
         // Check if email exists in the database
         const user = await Users.findOne({
-            where: { companyEmail },
+            where: { companyEmail ,
+                isActive:1
+            },
             include: [
                 {
                     model: RoleAssignment,
                     as: 'roleAssignments', 
+                    where:{
+                        isActive:1
+                    },
                     include: [
                         {
                             model: Roles,
                             as: 'role', 
+                            where:{
+                                isActive:1
+                            },
                             include: [
                                 {
                                     model: PermAssignment,
                                     as: 'permAssignments', // Include the PermAssignment table
+                                    where:{
+                                        isActive:1
+                                    },
                                     include:[
                                          {
                                             model:Permissions,
-                                            as : 'permission'    
+                                            as : 'permission'   ,
+                                            where:{
+                                                isActive:1
+                                            }, 
                                          }   
                                     ]
                                 },
                                 {
                                     model: Jobs,
                                     as: 'job', 
+                                    where:{
+                                        isActive:1
+                                    },
                                 },
                                 {
                                     model: Location,
                                     as: 'location', 
+                                    where:{
+                                        isActive:1
+                                    },
                                 },
                                 {
                                     model: Company,
                                     as: 'company', 
+                                    where:{
+                                        isActive:1
+                                    },
                                     include:[
                                     {
                                         model: Client,
                                         as: 'client', 
+                                        where:{
+                                            isActive:1
+                                        },
                                     },
                                 ]
                                 },
@@ -86,18 +112,18 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
        // const permissionString = permissions?.join(',') || '';
 
         if (!user) {
-         res.status(400).json({ status: false, message: 'Email not found' });
+         res.status(400).json({ status: false, message: 'Email not found',data: null });
         }
 
         if (!user?.hashPassword) {
-         res.status(500).json({ status: false, message: 'Password hash is missing for this user' });
+         res.status(500).json({ status: false, message: 'Password hash is missing for this user',data: null });
         }
 
         // Check if the password is valid
         try {
             await comparePass(password, user?.hashPassword!);
         } catch (error) {
-         res.status(401).json({ status: false, message: 'Invalid password' });
+         res.status(401).json({ status: false, message: 'Invalid password' ,data: null});
         }
         const token = generateToken(user?.id.toString()!, user?.companyId.toString()!);
 
@@ -128,7 +154,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({ status: true, message: 'Login successful', data: userData });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(500).json({ status: false, error: 'Failed to login', data: error });
+        res.status(500).json({ status: false, message: 'Failed to login', data: error });
     }
 };
 
@@ -141,7 +167,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     try {
         if (password !== confirmPassword) {
-            res.status(400).json({ status: false, message: 'Passwords do not match', data:'' });
+            res.status(400).json({ status: false, message: 'Something went wrong please try again later.', data:null });
             return;
         }
 
@@ -153,7 +179,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const role = await Roles.findOne({
             where: { locationId : locationID,
                 jobId:jobId,
-                companyId:companyId 
+                companyId:companyId ,
+                isActive:1
             },
         });
 
@@ -187,6 +214,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         res.status(200).json({ status: true, message: 'User Created Successful', data: user });
 
     } catch (error) {
-        res.status(200).json({ status: true, message: 'User Created Successful', data: error });
+        res.status(200).json({ status: true, message: 'Something went wrong please try again later.', data: error });
     }
 };        

@@ -8,6 +8,8 @@ class PermAssignment extends Model<InferAttributes<PermAssignment>, InferCreatio
   declare id: CreationOptional<number>;
   declare permId: number;
   declare roleId: number;
+  declare isActive: CreationOptional<number>;
+  
 }
 
 export default PermAssignment;
@@ -39,6 +41,10 @@ export function init(sequelize: Sequelize) {
           key: 'id',      // Foreign key references Users.id
         },
         onDelete: 'CASCADE', // Optional: Delete the user profile if the user is deleted
+      },
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
       },
      
     },

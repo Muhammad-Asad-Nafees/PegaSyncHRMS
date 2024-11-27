@@ -13,6 +13,7 @@ class Location extends Model<InferAttributes<Location>, InferCreationAttributes<
   declare latitude: string;
   declare longitude: string;
   declare companyId: string;
+  declare isActive: CreationOptional<number>;
 
 }
 
@@ -45,10 +46,13 @@ export function init(sequelize: Sequelize) {
         allowNull: true, // `location` can be nullable
       },
       companyId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true, // `companyID` can be nullable
       },
-     
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue:1
+      },
     },
     {
       sequelize,

@@ -5,10 +5,7 @@ class Country extends Model<InferAttributes<Country>, InferCreationAttributes<Co
   declare id: CreationOptional<number>;
   declare countryName: string;
   declare countryCode: string;
-  declare isActive: number;
-  declare isDeleted: number;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
+  declare isActive: CreationOptional<number>;
 }
 
 export default Country;
@@ -36,28 +33,12 @@ export function init(sequelize: Sequelize) {
         allowNull: false,
         defaultValue: 1, // Default to active
       },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default to not deleted
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
+      
     },
     {
       sequelize,
       modelName: 'Country', // Model name in Sequelize
       tableName: 'countries', // Table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
     }
   );
 }

@@ -8,6 +8,7 @@ class Job extends Model<InferAttributes<Job>, InferCreationAttributes<Job>> {
   declare jobDesc: string;
   declare jobLevelId: number;
   declare companyId: number;
+  declare isActive: CreationOptional<number>;
 }
 
 export default Job;
@@ -37,6 +38,10 @@ export function init(sequelize: Sequelize) {
       companyId: {
         type: DataTypes.INTEGER,
         allowNull: false, // `companyID` is required
+      },
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
       },
     },
     {

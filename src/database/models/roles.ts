@@ -12,7 +12,8 @@ class Roles extends Model<InferAttributes<Roles>, InferCreationAttributes<Roles>
   declare roleDesc: string;
   declare locationId: number;
   declare jobId: number;
-  declare companyId: number;
+  declare companyId: CreationOptional<number>;
+  declare isActive: CreationOptional<number>;
 }
 
 export default Roles;
@@ -47,14 +48,16 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: true, // `companyID` can be nullable
       },
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+      },
    
     },
     {
       sequelize,
       modelName: 'Roles', // Sequelize model name
       tableName: 'roles', // Corresponding table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
     }
   );
 }

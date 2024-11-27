@@ -14,40 +14,67 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
         }
 
         const users = await Users.findAll({
+            where:{
+                isActive:1
+            },
             include: [
                 {
                     model: RoleAssignment,
                     as: 'roleAssignments',
+                    where:{
+                        isActive:1
+                    },
                     include: [
                         {
                             model: Roles,
                             as: 'role',
+                            where:{
+                                isActive:1
+                            },
                             include: [
                                 {
                                     model: PermAssignment,
                                     as: 'permAssignments', // Include the PermAssignment table
+                                    where:{
+                                        isActive:1
+                                    },
                                     include: [
                                         {
                                             model: Permissions,
                                             as: 'permission',
+                                            where:{
+                                                isActive:1
+                                            },
                                         },
                                     ],
                                 },
                                 {
                                     model: Jobs,
                                     as: 'job',
+                                    where:{
+                                        isActive:1
+                                    },
                                 },
                                 {
                                     model: Location,
                                     as: 'location',
+                                    where:{
+                                        isActive:1
+                                    },
                                 },
                                 {
                                     model: Company,
                                     as: 'company',
+                                    where:{
+                                        isActive:1
+                                    },
                                     include: [
                                         {
                                             model: Client,
                                             as: 'client',
+                                            where:{
+                                                isActive:1
+                                            },
                                         },
                                     ],
                                 },
@@ -83,10 +110,14 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
             clientName: user?.roleAssignments?.[0]?.role?.company?.client?.clientName,
         }));
 
-        res.status(200).json({ status: true, data: userData });
+        res.status(200).json({ status: true, data: userData, message: 'Data fetched Successfully' });
     } catch (error) {
         console.error('Error fetching users:', error);
-        res.status(500).send({ error: 'Failed to fetch users', details: error });
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch data. Please try again later.' 
+        });
     }
 };
 
@@ -98,11 +129,19 @@ export const getCountries = async (req: Request, res: Response): Promise<void> =
             throw new Error('Countries model is not initialized.');
         }
        // const users = await Users.findAll({});
-       const countries = await Country.findAll();
-        res.status(200).json({ status: true, data: countries });
+       const countries = await Country.findAll({
+        where:{
+            isActive:1
+        },
+       });
+       res.status(200).json({ status: true, data: countries, message: 'Data fetched Successfully' });
     } catch (error) {
         console.error('Error fetching countries:', error);
-        res.status(500).send({ error: 'Failed to fetch countries', details: error });
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch data. Please try again later.' 
+        });
     }
 };
 export const getCompany = async (req: Request, res: Response): Promise<void> => {
@@ -111,11 +150,19 @@ export const getCompany = async (req: Request, res: Response): Promise<void> => 
             throw new Error('Company model is not initialized.');
         }
        // const users = await Users.findAll({});
-       const user = await Company.findAll();
-        res.status(200).json({ status: true, data: user });
+       const user = await Company.findAll({
+        where:{
+            isActive:1
+        },
+       });
+       res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
     } catch (error) {
         console.error('Error fetching users:', error);
-        res.status(500).send({ error: 'Failed to fetch users', details: error });
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch data. Please try again later.' 
+        });
     }
 };
 
@@ -125,11 +172,19 @@ export const getLocations = async (req: Request, res: Response): Promise<void> =
             throw new Error('Location model is not initialized.');
         }
        // const users = await Users.findAll({});
-       const user = await Location.findAll();
-        res.status(200).json({ status: true, data: user });
+       const user = await Location.findAll({
+        where:{
+            isActive:1
+        },
+       });
+       res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
     } catch (error) {
         console.error('Error fetching Location:', error);
-        res.status(500).send({ error: 'Failed to fetch Location', details: error });
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch data. Please try again later.' 
+        });
     }
 };
 
@@ -140,11 +195,17 @@ export const getJobs = async (req: Request, res: Response): Promise<void> => {
         }
        // const users = await Users.findAll({});
        const user = await Job.findAll({
-        
+        where:{
+            isActive:1
+        },
     });
-        res.status(200).json({ status: true, data: user });
+    res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
     } catch (error) {
         console.error('Error fetching Job:', error);
-        res.status(500).send({ error: 'Failed to fetch Job', details: error });
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch data. Please try again later.' 
+        });
     }
 };

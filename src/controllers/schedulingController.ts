@@ -38,12 +38,11 @@ export const createScheduling = async (req: Request, res: Response): Promise<voi
                 totalHours: hours,
             };
         });
-        console.log(schedules);
         const empScheduling = await EmpScheduling.bulkCreate(schedules);
         res.status(200).json({ status: true, message: 'Schedule Created Successful', data: empScheduling });
 
     } catch (error) {
-        res.status(200).json({ status: true, message: 'Something went wrong', data: error });
+        res.status(200).json({ status: true, message: 'Something went wrong please try again later.', data: error });
     }
  };     
 
@@ -51,25 +50,37 @@ export const createScheduling = async (req: Request, res: Response): Promise<voi
     try {
        
        const getSchdeule = await EmpScheduling.findAll({
+        where:{
+            isActive:1
+        },
         include:[
             {
                 model: Users,
                 as: 'submittedByUser',
+                where:{
+                    isActive:1
+                },
             },
             {
                 model: Users,
                 as: 'requestedForUser',
+                where:{
+                    isActive:1
+                },
             },
             {
                 model: Location,
                 as: 'submitBylocation',
+                where:{
+                    isActive:1
+                },
             },
         ]
         
     });
 
     if (!getSchdeule || getSchdeule.length === 0) {
-         res.status(404).json({ status: false, message: 'No schedule data found.' });
+         res.status(404).json({ status: false, message: 'No schedule data found.', data: null });
     }
 
     const schedules = getSchdeule.map((schedule) => ({
@@ -86,8 +97,8 @@ export const createScheduling = async (req: Request, res: Response): Promise<voi
         endTime: schedule.endTime,
         totalHours: schedule.totalHours,
     }));
-        res.status(200).json({ status: true, data: schedules });
+        res.status(200).json({ status: true, message: 'Data Fetched Successfully',data: schedules });
     } catch (error) {
-        res.status(500).send({ error: 'Failed to fetch EmpScheduling', data: error });
+        res.status(500).send({ status: false,message: 'Failed to fetch EmpScheduling', data: error });
     }
 };

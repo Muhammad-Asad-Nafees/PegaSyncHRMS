@@ -5,9 +5,6 @@ class EmpAttendanceType extends Model<InferAttributes<EmpAttendanceType>, InferC
   declare id: CreationOptional<number>;
   declare typeName: string;
   declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 export default EmpAttendanceType;
@@ -28,23 +25,7 @@ export function init(sequelize: Sequelize) {
       },
       isActive: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         defaultValue: 1, // Default value for isActive (active)
-      },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
       },
     },
     {

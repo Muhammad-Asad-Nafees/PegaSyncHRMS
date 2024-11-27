@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Users, Location,EmpAttendanceProfile,EmpAttendanceDetails } from '../database';
 import { Op,Sequelize } from 'sequelize';
+import EmpAttendanceType from '../database/models/empattendancetypes';
 const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
     host: 'localhost', // Replace with your database host
     dialect: 'mysql',  // Replace with your database dialect (e.g., mysql, postgres, etc.)
@@ -9,7 +10,11 @@ const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
 export const checkLocation = async (req: Request, res: Response): Promise<void> => {
     try {
         const { userRecId,latitude, longitude } = req.body;
-        const location = await Location.findAll();
+        const location = await Location.findAll({
+            where:{
+                isActive:1
+            }
+        });
         const toRadians = (degree: number) => (degree * Math.PI) / 180;
 
         const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -46,11 +51,27 @@ export const checkLocation = async (req: Request, res: Response): Promise<void> 
 export const addTimeClock= async (req: Request, res: Response): Promise<void> => {
     try {
         const { userRecId,locationId,submitteddatetime,profileId,typeId } = req.body;
-
+        
         if (!typeId) {
             res.status(400).json({ status: false, message: 'typeId is required.' });
             return;
         }
+        const getShiftName = await EmpAttendanceType.findAll({
+            where : {
+                id: typeId,
+                isActive:1
+            },
+            include : [
+                {
+                    model: EmpAttendanceDetails,
+                    as : 'attendanceProfileId',
+                    where : {
+                        activeStatus : 1,
+                        isActive:1
+                    }
+                }
+            ]
+        })
         if (profileId == '' || profileId == null) {
             // Create a new profile if `profileId` is null or empty
             const addProfile = await EmpAttendanceProfile.create({
@@ -69,7 +90,7 @@ export const addTimeClock= async (req: Request, res: Response): Promise<void> =>
                 typeDateTime: submitteddatetime,
             });
 
-            res.status(200).json({ status: true, data: addDetails, message: 'Start Successfully' });
+            res.status(200).json({ status: true, data: addDetails, message: getShiftName+' Successfully' });
             return;
         }
         
@@ -77,7 +98,7 @@ export const addTimeClock= async (req: Request, res: Response): Promise<void> =>
          if (typeId == 3) {
             await EmpAttendanceDetails.update(
                 { activeStatus: 0 },
-                { where: { typeId: 2, profileId: profileId, activeStatus: 1 } }
+                { where: { typeId: 2, profileId: profileId, activeStatus: 1,isActive:1 } }
             );
 
             const addDetails = await EmpAttendanceDetails.create({
@@ -87,13 +108,13 @@ export const addTimeClock= async (req: Request, res: Response): Promise<void> =>
                 typeDateTime: submitteddatetime,
             });
 
-            res.status(200).json({ status: true, data: addDetails, message: 'TypeId 2 - Updated Successfully' });
+            res.status(200).json({ status: true, data: addDetails, message: getShiftName+' Successfully' });
             return;
         }
         if (typeId == 4) {
             await EmpAttendanceDetails.update(
                 { activeStatus: 0 },
-                { where: { profileId: profileId } }
+                { where: { profileId: profileId,isActive:1 } }
             );
 
             const addDetails = await EmpAttendanceDetails.create({
@@ -103,7 +124,7 @@ export const addTimeClock= async (req: Request, res: Response): Promise<void> =>
                 typeDateTime: submitteddatetime,
             });
 
-            res.status(200).json({ status: true, data: addDetails, message: 'TypeId 4 - Updated Successfully' });
+            res.status(200).json({ status: true, data: addDetails, message: getShiftName+' Successfully' });
             return;
         }
         const addDetails = await EmpAttendanceDetails.create({
@@ -112,10 +133,16 @@ export const addTimeClock= async (req: Request, res: Response): Promise<void> =>
             activeStatus: 1,
             typeDateTime: submitteddatetime,
         });
-        res.status(200).json({ status: true, data: addDetails, message: 'Start Successfully' });
+        res.status(200).json({ status: true, data: addDetails, message: getShiftName+' Successfully' });
+        return;
     } catch (error) {
-        console.error('Error fetching Location:', error);
-        res.status(500).send({ error: 'Failed to fetch Location', details: error });
+        console.error('Error fetching Data:', error);
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch last event. Please try again later.' 
+        });
+        return;
     }
 };
 
@@ -127,21 +154,55 @@ export const getLastEvent = async (req: Request, res: Response): Promise<void> =
                 userRecId: userRecId,
                 locationId: locationId,
                 [Op.and]: Sequelize.literal(`CAST(zoneDateTime AS DATE) = '${currentdate}'`),
-
+                isActive:1
             },
             include : [
                 {
                     model: EmpAttendanceDetails,
                     as : 'attendanceProfileId',
                     where : {
-                        activeStatus : 1
+                        activeStatus : 1,
+                        isActive:1
                     }
                 }
             ]
         })
-        res.status(200).json({ status: true, data: getLastData, message: 'Success' });
+        res.status(200).json({ 
+            status: true, 
+            data: getLastData, 
+            message: 'Data retrieved successfully.' 
+        });
     } catch (error) {
-        console.error('Error fetching Location:', error);
-        res.status(500).send({ error: 'Failed to fetch Location', details: error });
+        console.error('Error fetching Last Event:', error);
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch last event. Please try again later.' 
+        });
+    }
+};
+
+export const getTimeCareReport = async (req: Request, res: Response): Promise<void> => {
+    try {
+       // const { userRecId,locationId,currentdate } = req.body;
+        const getLastData = await EmpAttendanceProfile.findAll({
+            where :{
+                isActive:1
+            },
+            include : [
+                {
+                    model: EmpAttendanceDetails,
+                    as : 'attendanceProfileId',                  
+                }
+            ]
+        })
+        res.status(200).json({ status: true, data: getLastData, message: 'Data retrieved successfully.' });
+    } catch (error) {
+        console.error('Error fetching Time Card Report:', error);
+        res.status(200).json({ 
+            status: false, 
+            data: null, 
+            message: 'Failed to fetch last event. Please try again later.' 
+        });
     }
 };

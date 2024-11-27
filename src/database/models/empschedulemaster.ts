@@ -14,6 +14,7 @@ class EmpScheduleMaster extends Model<InferAttributes<EmpScheduleMaster>, InferC
   declare endTime: string;
   declare isNight: number;
   declare totalHours: string;
+  declare isActive: CreationOptional<number>;
 }
 
 export default EmpScheduleMaster;
@@ -63,6 +64,10 @@ export function init(sequelize: Sequelize) {
       totalHours: {
         type: DataTypes.STRING,
         allowNull: true, // Assuming totalHours can be nullable
+      },
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
       },
     },
     {

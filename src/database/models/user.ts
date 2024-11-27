@@ -27,6 +27,7 @@ class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>
     declare city: CreationOptional<string>;
     declare state: CreationOptional<string>;
     declare companyId: number;
+    declare isActive: CreationOptional<number>;
 }
 
 
@@ -92,7 +93,10 @@ export function init(sequelize: Sequelize) {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
-           
+            isActive: {
+                type: DataTypes.INTEGER,
+                defaultValue: 1,
+            },
         },
         {
             sequelize,

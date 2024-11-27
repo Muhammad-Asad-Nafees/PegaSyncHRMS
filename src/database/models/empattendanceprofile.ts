@@ -9,6 +9,7 @@ class EmpAttendanceProfile extends Model<InferAttributes<EmpAttendanceProfile>, 
   declare userRecId: number;
   declare locationId: number;
   declare zoneDateTime: string;
+  declare isActive: CreationOptional<number>;
 }
 
 export default EmpAttendanceProfile;
@@ -34,6 +35,10 @@ export function init(sequelize: Sequelize) {
       zoneDateTime: {
         type: DataTypes.STRING,
         allowNull: true, // Assuming zoneDateTime can be nullable
+      },
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
       },
     },
     {

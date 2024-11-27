@@ -7,6 +7,7 @@ class Permission extends Model<InferAttributes<Permission>, InferCreationAttribu
   declare permission: string;
   declare permissionDesc: string;
   declare companyID: number;
+  declare isActive: CreationOptional<number>;
 }
 
 export default Permission;
@@ -32,6 +33,10 @@ export function init(sequelize: Sequelize) {
       companyID: {
         type: DataTypes.INTEGER,
         allowNull: true, // `companyID` can be nullable
+      },
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
       },
     },
     {

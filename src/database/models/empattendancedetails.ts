@@ -8,6 +8,7 @@ class EmpAttendanceDetail extends Model<InferAttributes<EmpAttendanceDetail>, In
   declare typeId: number;
   declare typeDateTime: number;
   declare activeStatus: number;
+  declare isActive: CreationOptional<number>;
 }
 
 export default EmpAttendanceDetail;
@@ -38,7 +39,10 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming isMissedPunch is required
       },
-     
+      isActive: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+      },
     },
     {
       sequelize,
