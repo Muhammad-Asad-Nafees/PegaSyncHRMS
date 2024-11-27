@@ -20,28 +20,28 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
             include: [
                 {
                     model: RoleAssignment,
-                    as: 'roleAssignments',
+                    as: 'userRoleAssign',
                     where:{
                         isActive:1
                     },
                     include: [
                         {
                             model: Roles,
-                            as: 'role',
+                            as: 'rolesRoleAssign',
                             where:{
                                 isActive:1
                             },
                             include: [
                                 {
                                     model: PermAssignment,
-                                    as: 'permAssignments', // Include the PermAssignment table
+                                    as: 'rolesPermAssign', // Include the PermAssignment table
                                     where:{
                                         isActive:1
                                     },
                                     include: [
                                         {
                                             model: Permissions,
-                                            as: 'permission',
+                                            as: 'permPermAssign',
                                             where:{
                                                 isActive:1
                                             },
@@ -95,19 +95,19 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
             //@ts-ignore
             companyId: user?.companyId,
             //@ts-ignore
-            roleName: user?.roleAssignments?.[0]?.role?.role,
+            roleName: user?.userRoleAssign?.[0]?.rolesRoleAssign?.role,
             //@ts-ignore
-            jobName: user?.roleAssignments?.[0]?.role?.job?.jobName,
+            jobName: user?.userRoleAssign?.[0]?.rolesRoleAssign?.job?.jobName,
             //@ts-ignore
-            locationName: user?.roleAssignments?.[0]?.role?.location?.location,
+            locationName: user?.userRoleAssign?.[0]?.rolesRoleAssign?.location?.location,
             //@ts-ignore
-            latitude: user?.roleAssignments?.[0]?.role?.location?.latitude,
+            latitude: user?.userRoleAssign?.[0]?.rolesRoleAssign?.location?.latitude,
             //@ts-ignore
-            longitude: user?.roleAssignments?.[0]?.role?.location?.longitude,
+            longitude: user?.userRoleAssign?.[0]?.rolesRoleAssign?.location?.longitude,
             //@ts-ignore
-            companyName: user?.roleAssignments?.[0]?.role?.company?.companyName,
+            companyName: user?.userRoleAssign?.[0]?.rolesRoleAssign?.company?.companyName,
             //@ts-ignore
-            clientName: user?.roleAssignments?.[0]?.role?.company?.client?.clientName,
+            clientName: user?.userRoleAssign?.[0]?.rolesRoleAssign?.company?.client?.clientName,
         }));
 
         res.status(200).json({ status: true, data: userData, message: 'Data fetched Successfully' });

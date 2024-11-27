@@ -20,3 +20,5 @@ export { default as EmpAttendanceDetails, associate as associateEmpAttendanceDet
 export { default as EmpAttendanceTypes, associate as associateEmpAttendanceTypes, init as initEmpAttendanceTypes } from './empattendancetypes';
 export { default as EmpAttendanceCoordinates, associate as associateEmpAttendanceCoordinates, init as initEmpAttendanceCoordinates } from './empattendancecoordinates';
 export { default as EmpAttendanceAlerts, associate as associateEmpAttendanceAlerts, init as initEmpAttendanceAlerts} from './empattendancealerts';
+
+export { default as ScheduleTypes, associate as associateScheduleTypes, init as initScheduleTypes} from './scheduletypes';

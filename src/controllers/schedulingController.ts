@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { EmpScheduling,Users ,Location} from '../database';
+import { EmpScheduling,Users ,Location, ScheduleTypes} from '../database';
 import { Sequelize } from 'sequelize';
 import { parseISO, eachDayOfInterval, differenceInMinutes } from "date-fns";
 
@@ -98,6 +98,22 @@ export const createScheduling = async (req: Request, res: Response): Promise<voi
         totalHours: schedule.totalHours,
     }));
         res.status(200).json({ status: true, message: 'Data Fetched Successfully',data: schedules });
+    } catch (error) {
+        res.status(500).send({ status: false,message: 'Failed to fetch EmpScheduling', data: error });
+    }
+};
+
+export const scheduleTypes = async (req: Request, res: Response): Promise<void> => {
+    try {
+       
+       const getSchdeule = await ScheduleTypes.findAll({
+        where:{
+            isActive:1
+        },
+           
+    });
+        
+    res.status(200).json({ status: true, message: 'Data Fetched Successfully',data: getSchdeule });
     } catch (error) {
         res.status(500).send({ status: false,message: 'Failed to fetch EmpScheduling', data: error });
     }

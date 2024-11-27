@@ -69,8 +69,8 @@ export function associate() {
   Roles.belongsTo(location, { foreignKey: 'locationId', as: 'location' });
 
   
-  Roles.hasMany(RoleAssignment, { foreignKey: 'roleId', as: 'roleAssignments' });
-  Roles.hasMany(PermAssignment, { foreignKey: 'roleId', as: 'permAssignments' });
+  Roles.hasMany(RoleAssignment, { foreignKey: 'roleId', as: 'rolesRoleAssign' });
+  Roles.hasMany(PermAssignment, { foreignKey: 'roleId', as: 'rolesPermAssign' });
   // Example associations (if you have relationships with other models):
   // Role.belongsTo(Location, { foreignKey: 'locationID' });
   // Role.belongsTo(Job, { foreignKey: 'JobID' });

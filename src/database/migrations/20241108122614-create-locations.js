@@ -53,37 +53,37 @@ module.exports = {
         type: Sequelize.STRING
       },
       radius: {
-        type: Sequelize.INTEGER,
-        default: 1
+        type: Sequelize.FLOAT,
+        defaultValue: 0.2
       },
       timeClockSessionDuration: {
         type: Sequelize.INTEGER,
-        default: 15
+        defaultValue: 15
       },
       isRangeAlert: {
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       locationAlertInterval: {
         type: Sequelize.INTEGER,
-        default: 30
+        defaultValue: 30
       },
       gracePeriod: {
         type: Sequelize.INTEGER,
-        default: 30
+        defaultValue: 30
       },
       isTimeZoneCheck: {
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       isScheduled: {
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       takeAwayMealHours: {
         allowNull: true,
         type: Sequelize.INTEGER,
-        default: 1
+        defaultValue: 1
       },
       tableId: {
         type: Sequelize.INTEGER,

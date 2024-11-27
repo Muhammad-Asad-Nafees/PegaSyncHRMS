@@ -109,7 +109,7 @@ export function init(sequelize: Sequelize) {
 export function associate() {
     Users.belongsTo(Company, { foreignKey: 'companyId', as: 'company' });
 
-    Users.hasMany(RoleAssignment, { foreignKey: 'userRecId', as: 'roleAssignments' });
+    Users.hasMany(RoleAssignment, { foreignKey: 'userRecId', as: 'userRoleAssign' });
 
     Users.hasMany(EmpScheduleMaster, { foreignKey: 'submittedBy', as: 'submittedByUser' });
     Users.hasMany(EmpScheduleMaster, { foreignKey: 'requestedFor', as: 'requestedForUser' });

@@ -16,7 +16,8 @@ import {
     EmpAttendanceDetails,
     EmpAttendanceTypes,
     EmpAttendanceCoordinates,
-    EmpAttendanceAlerts
+    EmpAttendanceAlerts,
+    ScheduleTypes
 
 } from './models'
 
@@ -56,6 +57,7 @@ function initModels() {
     models.initEmpAttendanceTypes(sequelize);
     models.initEmpAttendanceCoordinates(sequelize);
     models.initEmpAttendanceAlerts(sequelize);
+    models.initScheduleTypes(sequelize);
 
 }
 
@@ -76,6 +78,7 @@ function associateModels() {
     models.associateEmpAttendanceTypes();
     models.associateEmpAttendanceCoordinates();
     models.associateEmpAttendanceAlerts();
+    models.associateScheduleTypes();
 }
 
 initModels()
@@ -98,5 +101,6 @@ export {
     EmpAttendanceDetails,
     EmpAttendanceTypes,
     EmpAttendanceCoordinates,
-    EmpAttendanceAlerts
+    EmpAttendanceAlerts,
+    ScheduleTypes
 }

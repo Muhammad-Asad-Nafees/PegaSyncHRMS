@@ -34,17 +34,17 @@ export const checkLocation = async (req: Request, res: Response): Promise<void> 
                 parseFloat(location.latitude),
                 parseFloat(location.longitude)
             );
-            return distance < 0.2; // Check if within 0.2 km
+            return distance < location.radius; // Check if within 0.2 km
         });
         if (nearbyLocations.length > 0) {
             res.status(200).json({ status: true, data: nearbyLocations, message: 'Location within radius.' });
         } else {
-            res.status(200).json({ status: false, message: 'No locations found within the specified radius.' });
+            res.status(200).json({ status: false, message: 'No locations found within the specified radius.',data : null });
         }
         
     } catch (error) {
         console.error('Error fetching Location:', error);
-        res.status(500).send({ error: 'Failed to fetch Location', details: error });
+        res.status(500).send({ status:false, message: 'Something went wrong. Please try again later.', data: error });
     }
 };
 
@@ -137,10 +137,10 @@ export const addTimeClock= async (req: Request, res: Response): Promise<void> =>
         return;
     } catch (error) {
         console.error('Error fetching Data:', error);
-        res.status(200).json({ 
+        res.status(500).json({ 
             status: false, 
             data: null, 
-            message: 'Failed to fetch last event. Please try again later.' 
+            message: 'Something went wrong. Please try again later.' 
         });
         return;
     }
@@ -174,10 +174,10 @@ export const getLastEvent = async (req: Request, res: Response): Promise<void> =
         });
     } catch (error) {
         console.error('Error fetching Last Event:', error);
-        res.status(200).json({ 
+        res.status(500).json({ 
             status: false, 
             data: null, 
-            message: 'Failed to fetch last event. Please try again later.' 
+            message: 'Something went wrong. Please try again later.' 
         });
     }
 };
@@ -199,10 +199,29 @@ export const getTimeCareReport = async (req: Request, res: Response): Promise<vo
         res.status(200).json({ status: true, data: getLastData, message: 'Data retrieved successfully.' });
     } catch (error) {
         console.error('Error fetching Time Card Report:', error);
-        res.status(200).json({ 
+        res.status(500).json({ 
             status: false, 
             data: null, 
-            message: 'Failed to fetch last event. Please try again later.' 
+            message: 'Something went wrong. Please try again later.' 
+        });
+    }
+};
+
+export const getAttendanceTypes= async (req: Request, res: Response): Promise<void> => {
+    try {
+       // const { userRecId,locationId,currentdate } = req.body;
+        const getTypes = await EmpAttendanceType.findAll({
+            where :{
+                isActive:1
+            },
+        })
+        res.status(200).json({ status: true, data: getTypes, message: 'Data retrieved successfully.' });
+    } catch (error) {
+        console.error('Error fetching Attendance Types:', error);
+        res.status(500).json({ 
+            status: false, 
+            data: null, 
+            message: 'Something went wrong. Please try again later.' 
         });
     }
 };

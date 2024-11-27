@@ -56,7 +56,7 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-   RoleAssignment.belongsTo(Roles, { foreignKey: 'roleId',as : 'role' });
-   RoleAssignment.belongsTo(Users, { foreignKey: 'userRecId', as : 'user' });
+   RoleAssignment.belongsTo(Roles, { foreignKey: 'roleId',as : 'rolesRoleAssign' });
+   RoleAssignment.belongsTo(Users, { foreignKey: 'userRecId', as : 'userRoleAssign' });
 
 }

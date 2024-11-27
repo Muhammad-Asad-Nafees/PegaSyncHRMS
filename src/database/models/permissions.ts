@@ -6,7 +6,7 @@ class Permission extends Model<InferAttributes<Permission>, InferCreationAttribu
   declare id: CreationOptional<number>;
   declare permission: string;
   declare permissionDesc: string;
-  declare companyID: number;
+  declare companyId: number;
   declare isActive: CreationOptional<number>;
 }
 
@@ -30,7 +30,7 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: true, // `permissionDesc` can be nullable
       },
-      companyID: {
+      companyId: {
         type: DataTypes.INTEGER,
         allowNull: true, // `companyID` can be nullable
       },
@@ -50,5 +50,5 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   // Example associations (if you have relationships with other models):
-  Permission.hasMany(PermAssignment, { foreignKey: 'permId', as: 'permAssignments' });
+  Permission.hasMany(PermAssignment, { foreignKey: 'permId', as: 'permPermAssign' });
 }

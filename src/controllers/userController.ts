@@ -31,69 +31,47 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
  
         // Check if email exists in the database
         const user = await Users.findOne({
-            where: { companyEmail ,
-                isActive:1
+            where: { 
+                companyEmail,
+                isActive: 1,
             },
             include: [
                 {
                     model: RoleAssignment,
-                    as: 'roleAssignments', 
-                    where:{
-                        isActive:1
-                    },
+                    as: 'userRoleAssign',
+                    where: { isActive: 1 },
                     include: [
                         {
                             model: Roles,
-                            as: 'role', 
-                            where:{
-                                isActive:1
-                            },
+                            as: 'rolesRoleAssign',
                             include: [
                                 {
                                     model: PermAssignment,
-                                    as: 'permAssignments', // Include the PermAssignment table
-                                    where:{
-                                        isActive:1
-                                    },
-                                    include:[
-                                         {
-                                            model:Permissions,
-                                            as : 'permission'   ,
-                                            where:{
-                                                isActive:1
-                                            }, 
-                                         }   
-                                    ]
+                                    as: 'rolesPermAssign',
+                                    include: [
+                                        {
+                                            model: Permissions,
+                                            as: 'permPermAssign',
+                                        },
+                                    ],
                                 },
                                 {
                                     model: Jobs,
-                                    as: 'job', 
-                                    where:{
-                                        isActive:1
-                                    },
+                                    as: 'job',
                                 },
                                 {
                                     model: Location,
-                                    as: 'location', 
-                                    where:{
-                                        isActive:1
-                                    },
+                                    as: 'location',
                                 },
                                 {
                                     model: Company,
-                                    as: 'company', 
-                                    where:{
-                                        isActive:1
-                                    },
-                                    include:[
-                                    {
-                                        model: Client,
-                                        as: 'client', 
-                                        where:{
-                                            isActive:1
+                                    as: 'company',
+                                    include: [
+                                        {
+                                            model: Client,
+                                            as: 'client',
                                         },
-                                    },
-                                ]
+                                    ],
                                 },
                             ],
                         },
@@ -101,54 +79,69 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
                 },
             ],
         });
-        // Extract permissions as a comma-separated string
-        //@ts-ignore
-        const permissions = user?.roleAssignments?.flatMap(roleAssignment =>  roleAssignment.role?.permAssignments?.map(permAssignment => {
-                const permission = permAssignment.permission;
-                return permission ? { id: permission.id, name: permission.permission } : null; // Create object with id and name
-            })
-        ).filter(Boolean);// Filter out undefined or null values
-
-       // const permissionString = permissions?.join(',') || '';
-
+        
+        // Ensure the `user` object exists
         if (!user) {
-         res.status(400).json({ status: false, message: 'Email not found',data: null });
+             res.status(400).json({ 
+                status: false, 
+                message: 'Email not found', 
+                data: null 
+            });
         }
-
+        
+        // Ensure password hash exists
         if (!user?.hashPassword) {
-         res.status(500).json({ status: false, message: 'Password hash is missing for this user',data: null });
+             res.status(500).json({ 
+                status: false, 
+                message: 'Password hash is missing for this user', 
+                data: null 
+            });
         }
-
-        // Check if the password is valid
+        
+        // Check password validity
         try {
             await comparePass(password, user?.hashPassword!);
         } catch (error) {
-         res.status(401).json({ status: false, message: 'Invalid password' ,data: null});
+             res.status(401).json({ 
+                status: false, 
+                message: 'Invalid password', 
+                data: null 
+            });
         }
+        
+        // Generate JWT token
         const token = generateToken(user?.id.toString()!, user?.companyId.toString()!);
-
-        // Construct response data
+        
+        // Map permissions
+        //@ts-ignore
+        const permissions = user?.userRoleAssign.flatMap(roleAssignment =>roleAssignment.rolesRoleAssign?.rolesPermAssign?.map(permAssignment => {
+                const permission = permAssignment.permPermAssign;
+                return permission ? { id: permission.id, name: permission.permission } : null;
+            })
+        ).filter(Boolean) || [];
+        
+        // Construct the user data response
         const userData = {
             id: user?.id,
             companyEmail: user?.companyEmail,
             fullName: user?.displayName,
-            companyId : user?.companyId,
+            companyId: user?.companyId,
             //@ts-ignore
-            roleName: user?.roleAssignments[0].role?.role,
-             //@ts-ignore
-            jobName: user?.roleAssignments[0].role?.job?.jobName,
+            roleName: user?.userRoleAssign?.[0]?.rolesRoleAssign?.role || null,
             //@ts-ignore
-            locationName: user?.roleAssignments[0].role?.location?.location,
+            jobName: user.userRoleAssign?.[0]?.rolesRoleAssign?.job?.jobName || null,
+           //@ts-ignore
+            locationName: user.userRoleAssign?.[0]?.rolesRoleAssign?.location?.location || null,
             //@ts-ignore
-            latitude: user?.roleAssignments[0].role?.location?.latitude,
+            latitude: user.userRoleAssign?.[0]?.rolesRoleAssign?.location?.latitude || null,
             //@ts-ignore
-            longitude: user?.roleAssignments[0].role?.location?.longitude,
+            longitude: user.userRoleAssign?.[0]?.rolesRoleAssign?.location?.longitude || null,
             //@ts-ignore
-            companyName: user?.roleAssignments[0].role?.company?.companyName,
+            companyName: user.userRoleAssign?.[0]?.rolesRoleAssign?.company?.companyName || null,
             //@ts-ignore
-            clientName: user?.roleAssignments[0].role?.company?.client.clientName,
-            permissions:permissions,
-            jwtToken: token
+            clientName: user.userRoleAssign?.[0]?.rolesRoleAssign?.company?.client?.clientName || null,
+            permissions: permissions,
+            jwtToken: token,
         };
 
         res.status(200).json({ status: true, message: 'Login successful', data: userData });
