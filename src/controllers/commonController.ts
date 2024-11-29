@@ -5,12 +5,13 @@ import Permissions from '../database/models/permissions';
 import Job from '../database/models/jobs';
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
-        const {userRecId,companyId} = req.body;
+        const {userRecId,companyId} = req.query;
         if (!Users) {
             throw new Error('Users model is not initialized.');
         }
 
         const users = await Users.findAll({
+            //@ts-ignore
             where:{
                 isActive:1,
                 companyId:companyId
@@ -144,7 +145,7 @@ export const getCountries = async (req: Request, res: Response): Promise<void> =
 };
 export const getCompany = async (req: Request, res: Response): Promise<void> => {
     try {
-        const {userRecId} = req.body;
+        const {userRecId} = req.query;
         if (!Company) {
             throw new Error('Company model is not initialized.');
         }
@@ -167,12 +168,13 @@ export const getCompany = async (req: Request, res: Response): Promise<void> => 
 
 export const getLocations = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { userRecId,companyId } = req.body;
+        const { userRecId,companyId } = req.query;
         if (!Location) {
             throw new Error('Location model is not initialized.');
         }
        // const users = await Users.findAll({});
        const user = await Location.findAll({
+         //@ts-ignore
         where:{
             isActive:1,
             companyId:companyId
@@ -191,21 +193,40 @@ export const getLocations = async (req: Request, res: Response): Promise<void> =
 
 export const getJobs = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { userRecId,companyId } = req.body;
+        // Accessing parameters from the URL
+        const { userRecId, companyId } = req.query;
+
         if (!Job) {
             throw new Error('Job model is not initialized.');
         }
-       // const users = await Users.findAll({});
-       const user = await Job.findAll({
-        where:{
-            isActive:1,
-            companyId:companyId
-        },
-    });
-    res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
+
+        // Ensure companyId is provided (since it's needed for the query)
+        if (!companyId) {
+            res.status(400).json({ 
+                status: false, 
+                data: null, 
+                message: 'companyId parameter is required' 
+            });
+            return;
+        }
+
+        // Fetch the jobs using the companyId from query parameters
+        const job = await Job.findAll({
+           //@ts-ignore
+            where: {
+                isActive: 1,
+                companyId: companyId,
+            },
+        });
+
+        res.status(200).json({ 
+            status: true, 
+            data: job, 
+            message: 'Data fetched successfully' 
+        });
     } catch (error) {
         console.error('Error fetching Job:', error);
-        res.status(200).json({ 
+        res.status(500).json({ 
             status: false, 
             data: null, 
             message: 'Failed to fetch data. Please try again later.' 

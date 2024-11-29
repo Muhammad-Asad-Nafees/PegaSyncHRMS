@@ -160,6 +160,13 @@ module.exports = {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
+        {
+          tableName: 'scheduletypes',
+          pk_Name: 'id',
+          fk_Name: 'companyId,tableId',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ],
       {}
     );

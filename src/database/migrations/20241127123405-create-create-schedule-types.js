@@ -37,7 +37,7 @@ module.exports = {
       },
       tableId: {
         type: Sequelize.INTEGER,
-        defaultValue: 22
+        defaultValue: 23
       },
       isActive: {
         type: Sequelize.INTEGER,

@@ -5,15 +5,12 @@ class TimeCorrection extends Model<InferAttributes<TimeCorrection>, InferCreatio
   declare id: CreationOptional<number>;
   declare submittedBy: number;
   declare requestedFor: number;
-  declare typeID: number;
+  declare typeId: number;
   declare correctionTime: string;
   declare comment: string;
   declare empProfileID: number;
   declare empDetailID: number;
   declare isActive: CreationOptional<number>;
-  declare isDeleted: CreationOptional<number>;
-  declare createdAt: CreationOptional<Date>;
-  declare updatedAt: CreationOptional<Date>;
 }
 
 export default TimeCorrection;
@@ -36,7 +33,7 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming it's required
       },
-      typeID: {
+      typeId: {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming it's required
       },
@@ -61,21 +58,7 @@ export function init(sequelize: Sequelize) {
         allowNull: false,
         defaultValue: 1, // Default value for isActive (active)
       },
-      isDeleted: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0, // Default value for isDeleted (not deleted)
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW, // Default to current timestamp
-      },
+      
     },
     {
       sequelize,

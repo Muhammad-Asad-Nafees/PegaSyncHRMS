@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { Users, Company, Client, RoleAssignment, Roles, Jobs, Location } from '../database';
 import { body, check, validationResult } from 'express-validator';
-import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass,hashPass,generateToken } from '../lib/tool'
-import { log } from 'console';
+import {  cryptPass, comparePass,generateToken } from '../lib/tool'
 import { Sequelize } from 'sequelize';
 import PermAssignment from '../database/models/permassignments';
 import Permissions from '../database/models/permissions';

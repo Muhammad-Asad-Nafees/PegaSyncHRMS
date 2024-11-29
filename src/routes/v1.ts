@@ -6,7 +6,7 @@ import { checkLocation,addTimeClock,getLastEvent,getTimeCareReport,getAttendance
 import { createClient,createCompany,createLocation,createJobs,createRoles,createPermissions
     ,userRolesAssignment,assignModulePermissions
 } from '../controllers/userAccessController';
-
+import { addTimeCorrection } from '../controllers/timeCorrectionController';
 import { authenticateToken } from '../middleware'; // Import the middleware
 
 const router = Router();
@@ -28,7 +28,7 @@ router.post('/getLastEvent', authenticateToken, getLastEvent);
 router.get('/getTimeCareReport', authenticateToken, getTimeCareReport);
 router.get('/scheduleTypes', authenticateToken, scheduleTypes);
 router.get('/getAttendanceTypes', authenticateToken, getAttendanceTypes);
-
+router.post('/addTimeCorrection', authenticateToken, addTimeCorrection);
 
 //user setup apis
 router.post('/createClient', authenticateToken, createClient);
