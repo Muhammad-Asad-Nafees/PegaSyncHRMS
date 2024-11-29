@@ -6,6 +6,7 @@ import { log } from 'console';
 import { Sequelize } from 'sequelize';
 import PermAssignment from '../database/models/permassignments';
 import Permissions from '../database/models/permissions';
+import Job from '../database/models/jobs';
 const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
     host: 'localhost', // Replace with your database host
     dialect: 'mysql',  // Replace with your database dialect (e.g., mysql, postgres, etc.)
@@ -155,8 +156,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
 
     const { firstName, lastName,displayName, companyEmail, actualEmail, hiredate, createdby,
-        password, confirmPassword, scheduleID, phoneNo, personalAddress,
-        locationID, zipCode, city, countryID, companyId ,jobId} = req.body;
+        password, confirmPassword, scheduleId, phoneNo, personalAddress,
+        locationId, zipCode, city, countryId, companyId ,jobId} = req.body;
 
     try {
         if (password !== confirmPassword) {
@@ -170,38 +171,63 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         console.log(hashedPassword);
 
         const role = await Roles.findOne({
-            where: { locationId : locationID,
+            where: { locationId : locationId,
                 jobId:jobId,
                 companyId:companyId ,
                 isActive:1
             },
         });
 
-        console.log(role);
-
+       
         const user = await Users.create(
             {
                 firstName: firstName,
                 lastName: lastName,
-                displayName:displayName,
+                displayName:firstName + '' + lastName,
                 companyEmail:companyEmail,
                 actualEmail:actualEmail,
                 phoneNo:phoneNo,
                 address:personalAddress,
                 zipCode:zipCode,
                 city:city,
-                countryId:countryID,
+                countryId:countryId,
                 hashPassword: hashedPassword,
                 companyId: companyId
             }
         );
 
         const userId = user.id;
-
-        const roleAssignment = await RoleAssignment.create({
-            userRecId: userId,
-            roleId: role?.id! // Assuming you have a role ID to assign
-        });
+        if(!role){
+            const locationName = await Location.findOne({
+                where: { 
+                    id : locationId,
+                    isActive:1
+                },
+            });
+            const jobName1= await Job.findOne({
+                where: { 
+                    id : jobId,
+                    isActive:1
+                },
+            });
+            const rolecreate = await Roles.create({
+                role: jobName1?.jobName + '' + locationName?.location,
+                roleDesc: jobName1?.jobName + '' + locationName?.location,
+                locationId: locationId,
+                jobId : jobId
+            })
+            const roleAssignment = await RoleAssignment.create({
+                userRecId: userId,
+                roleId: rolecreate?.id! // Assuming you have a role ID to assign
+            });
+        }
+        else{
+            const roleAssignment = await RoleAssignment.create({
+                userRecId: userId,
+                roleId: role?.id! // Assuming you have a role ID to assign
+            });
+        }
+       
 
 
         res.status(200).json({ status: true, message: 'User Created Successful', data: user });

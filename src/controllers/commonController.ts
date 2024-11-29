@@ -1,21 +1,19 @@
 import { Request, Response } from 'express';
 import { Users, Company, Client, RoleAssignment, Roles, Jobs, Location,Country } from '../database';
-import { body, check, validationResult } from 'express-validator';
-import { dispatchSuc, dispatchErr, prepareInput, createUuid, cryptPass, comparePass,hashPass,generateToken } from '../lib/tool'
-import { log } from 'console';
-import { Sequelize } from 'sequelize';
 import PermAssignment from '../database/models/permassignments';
 import Permissions from '../database/models/permissions';
 import Job from '../database/models/jobs';
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
+        const {userRecId,companyId} = req.body;
         if (!Users) {
             throw new Error('Users model is not initialized.');
         }
 
         const users = await Users.findAll({
             where:{
-                isActive:1
+                isActive:1,
+                companyId:companyId
             },
             include: [
                 {
@@ -146,6 +144,7 @@ export const getCountries = async (req: Request, res: Response): Promise<void> =
 };
 export const getCompany = async (req: Request, res: Response): Promise<void> => {
     try {
+        const {userRecId} = req.body;
         if (!Company) {
             throw new Error('Company model is not initialized.');
         }
@@ -168,13 +167,15 @@ export const getCompany = async (req: Request, res: Response): Promise<void> => 
 
 export const getLocations = async (req: Request, res: Response): Promise<void> => {
     try {
+        const { userRecId,companyId } = req.body;
         if (!Location) {
             throw new Error('Location model is not initialized.');
         }
        // const users = await Users.findAll({});
        const user = await Location.findAll({
         where:{
-            isActive:1
+            isActive:1,
+            companyId:companyId
         },
        });
        res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
@@ -190,13 +191,15 @@ export const getLocations = async (req: Request, res: Response): Promise<void> =
 
 export const getJobs = async (req: Request, res: Response): Promise<void> => {
     try {
+        const { userRecId,companyId } = req.body;
         if (!Job) {
             throw new Error('Job model is not initialized.');
         }
        // const users = await Users.findAll({});
        const user = await Job.findAll({
         where:{
-            isActive:1
+            isActive:1,
+            companyId:companyId
         },
     });
     res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
