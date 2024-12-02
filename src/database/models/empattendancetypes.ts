@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import EmpAttendanceDetail from './empattendancedetails';
 
 // Define the EmpAttendanceType model class
 class EmpAttendanceType extends Model<InferAttributes<EmpAttendanceType>, InferCreationAttributes<EmpAttendanceType>> {
@@ -40,6 +41,8 @@ export function init(sequelize: Sequelize) {
 
 // Define associations (if necessary)
 export function associate() {
+  EmpAttendanceType.hasMany(EmpAttendanceDetail, {foreignKey: 'typeId',as : 'detailTypeId' })
+  
   // Example associations (if you have relationships with other models):
   // EmpAttendanceType.hasMany(EmpAttendanceDetail, { foreignKey: 'typeID' });
 }

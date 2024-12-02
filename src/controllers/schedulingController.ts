@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { EmpScheduling,Users ,Location, ScheduleTypes} from '../database';
 import { Sequelize } from 'sequelize';
 import { parseISO, eachDayOfInterval, differenceInMinutes } from "date-fns";
+import {  dispatchSuc,dispatchErr } from '../lib/tool';
 
 const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
     host: 'localhost', // Replace with your database host
@@ -39,10 +40,10 @@ export const createScheduling = async (req: Request, res: Response): Promise<voi
             };
         });
         const empScheduling = await EmpScheduling.bulkCreate(schedules);
-        res.status(200).json({ status: true, message: 'Schedule Created Successful', data: empScheduling });
+        dispatchSuc(res, { data: empScheduling, message: 'Schedule Created Successful.'});
 
     } catch (error) {
-        res.status(200).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
  };     
 
@@ -80,7 +81,7 @@ export const createScheduling = async (req: Request, res: Response): Promise<voi
     });
 
     if (!getSchdeule || getSchdeule.length === 0) {
-         res.status(404).json({ status: false, message: 'No schedule data found.', data: null });
+        dispatchErr(res, { message: 'No schedule data found.' }, 404);
     }
 
     const schedules = getSchdeule.map((schedule) => ({
@@ -97,9 +98,9 @@ export const createScheduling = async (req: Request, res: Response): Promise<voi
         endTime: schedule.endTime,
         totalHours: schedule.totalHours,
     }));
-        res.status(200).json({ status: true, message: 'Data Fetched Successfully',data: schedules });
+    dispatchSuc(res, { data: schedules, message: 'Data retrieved successfully.'});
     } catch (error) {
-        res.status(500).send({ status: false,message: 'Failed to fetch EmpScheduling', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };
 
@@ -113,8 +114,8 @@ export const scheduleTypes = async (req: Request, res: Response): Promise<void> 
            
     });
         
-    res.status(200).json({ status: true, message: 'Data Fetched Successfully',data: getSchdeule });
+    dispatchSuc(res, { data: getSchdeule, message: 'Data retrieved successfully.'});
     } catch (error) {
-        res.status(500).send({ status: false,message: 'Failed to fetch EmpScheduling', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };

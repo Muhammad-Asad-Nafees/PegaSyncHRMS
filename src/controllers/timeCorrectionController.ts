@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import { Sequelize } from 'sequelize';
 import TimeCorrection from '../database/models/timecorrection';
+import {  dispatchSuc,dispatchErr } from '../lib/tool';
 
 const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
     host: 'localhost', // Replace with your database host
@@ -10,7 +11,7 @@ const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
 
 export const addTimeCorrection = async (req: Request, res: Response): Promise<void> => {
 
-    const { submittedBy,requestedFor,typeId,correctionTime,comment,empProfileID,empDetailID  }= req.body;
+    const { submittedBy,requestedFor,typeId,correctionTime,comment,empProfileId,empDetailId  }= req.body;
 
     try {
         const set = await TimeCorrection.create({
@@ -19,12 +20,14 @@ export const addTimeCorrection = async (req: Request, res: Response): Promise<vo
             typeId: typeId,
             correctionTime: correctionTime,
             comment: comment,
-            empProfileID: empProfileID,
-            empDetailID: empDetailID
+            empProfileId: empProfileId,
+            empDetailId: empDetailId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
-        res.status(200).json({ status: true, message: 'TimeCorrection Created Successful', data: set });
+        dispatchSuc(res, { data: set, message: 'TimeCorrection Created Successful.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };

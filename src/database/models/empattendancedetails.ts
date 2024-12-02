@@ -1,5 +1,6 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import EmpAttendanceProfile from './empattendanceprofile';
+import EmpAttendanceType from './empattendancetypes';
 
 // Define the EmpAttendanceDetail model class
 class EmpAttendanceDetail extends Model<InferAttributes<EmpAttendanceDetail>, InferCreationAttributes<EmpAttendanceDetail>> {
@@ -55,4 +56,6 @@ export function init(sequelize: Sequelize) {
 // Define associations (if necessary)
 export function associate() {
   EmpAttendanceDetail.belongsTo(EmpAttendanceProfile, { foreignKey: 'profileId',as : 'attendanceProfileId' });
+
+  EmpAttendanceDetail.belongsTo(EmpAttendanceType,{foreignKey: 'typeId',as : 'detailTypeId' })
 }

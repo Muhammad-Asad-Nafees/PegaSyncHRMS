@@ -6,6 +6,8 @@ import { Sequelize } from 'sequelize';
 import PermAssignment from '../database/models/permassignments';
 import Permissions from '../database/models/permissions';
 import Job from '../database/models/jobs';
+import {  dispatchSuc,dispatchErr } from '../lib/tool';
+
 const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
     host: 'localhost', // Replace with your database host
     dialect: 'mysql',  // Replace with your database dialect (e.g., mysql, postgres, etc.)
@@ -82,31 +84,19 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         
         // Ensure the `user` object exists
         if (!user) {
-             res.status(400).json({ 
-                status: false, 
-                message: 'Email not found', 
-                data: null 
-            });
+            dispatchErr(res, { message: 'Email not found.' }, 400);
         }
         
         // Ensure password hash exists
         if (!user?.hashPassword) {
-             res.status(500).json({ 
-                status: false, 
-                message: 'Password hash is missing for this user', 
-                data: null 
-            });
+            dispatchErr(res, { message: 'Password hash is missing for this user.' }, 400);
         }
         
         // Check password validity
         try {
             await comparePass(password, user?.hashPassword!);
         } catch (error) {
-             res.status(401).json({ 
-                status: false, 
-                message: 'Invalid password', 
-                data: null 
-            });
+            dispatchErr(res, { message: 'Invalid password.' }, 400);
         }
         
         // Generate JWT token
@@ -143,11 +133,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             permissions: permissions,
             jwtToken: token,
         };
-
+        dispatchSuc(res, { data: userData, message: 'Login successful.'});
         res.status(200).json({ status: true, message: 'Login successful', data: userData });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(500).json({ status: false, message: 'Failed to login', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };
 
@@ -160,7 +150,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     try {
         if (password !== confirmPassword) {
-            res.status(400).json({ status: false, message: 'Something went wrong please try again later.', data:null });
+            dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 400);
             return;
         }
 
@@ -228,10 +218,9 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         }
        
 
-
-        res.status(200).json({ status: true, message: 'User Created Successful', data: user });
+        dispatchSuc(res, { data: user, message: 'User Created Successful.'});
 
     } catch (error) {
-        res.status(200).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };        
