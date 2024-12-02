@@ -3,7 +3,7 @@ import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCr
 // Define the ApprovalProfile model class
 class ApprovalProfile extends Model<InferAttributes<ApprovalProfile>, InferCreationAttributes<ApprovalProfile>> {
   declare id: CreationOptional<number>;
-  declare requestID: number;
+  declare requestId: number;
   declare isApproved: number;
   declare requestDate: Date;
   declare submittedDate: Date;
@@ -26,7 +26,7 @@ export function init(sequelize: Sequelize) {
         primaryKey: true,
         allowNull: false,
       },
-      requestID: {
+      requestId: {
         type: DataTypes.INTEGER,
         allowNull: true, // Assuming requestID can be nullable
       },

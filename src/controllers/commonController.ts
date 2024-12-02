@@ -3,6 +3,7 @@ import { Users, Company, Client, RoleAssignment, Roles, Jobs, Location,Country }
 import PermAssignment from '../database/models/permassignments';
 import Permissions from '../database/models/permissions';
 import Job from '../database/models/jobs';
+import {  dispatchSuc,dispatchErr } from '../lib/tool'
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
         const {userRecId,companyId} = req.query;
@@ -109,14 +110,10 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
             clientName: user?.userRoleAssign?.[0]?.rolesRoleAssign?.company?.client?.clientName,
         }));
 
-        res.status(200).json({ status: true, data: userData, message: 'Data fetched Successfully' });
+        dispatchSuc(res, { data: userData, message: 'Data retrieved successfully.'});
     } catch (error) {
         console.error('Error fetching users:', error);
-        res.status(200).json({ 
-            status: false, 
-            data: null, 
-            message: 'Failed to fetch data. Please try again later.' 
-        });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };
 
@@ -133,36 +130,26 @@ export const getCountries = async (req: Request, res: Response): Promise<void> =
             isActive:1
         },
        });
-       res.status(200).json({ status: true, data: countries, message: 'Data fetched Successfully' });
+       dispatchSuc(res, { data: countries, message: 'Data retrieved successfully.'});
     } catch (error) {
         console.error('Error fetching countries:', error);
-        res.status(200).json({ 
-            status: false, 
-            data: null, 
-            message: 'Failed to fetch data. Please try again later.' 
-        });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };
 export const getCompany = async (req: Request, res: Response): Promise<void> => {
     try {
         const {userRecId} = req.query;
-        if (!Company) {
-            throw new Error('Company model is not initialized.');
-        }
+
        // const users = await Users.findAll({});
        const user = await Company.findAll({
         where:{
             isActive:1
         },
        });
-       res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
+       dispatchSuc(res, { data: user, message: 'Data retrieved successfully.'});
     } catch (error) {
         console.error('Error fetching users:', error);
-        res.status(200).json({ 
-            status: false, 
-            data: null, 
-            message: 'Failed to fetch data. Please try again later.' 
-        });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };
 
@@ -180,14 +167,10 @@ export const getLocations = async (req: Request, res: Response): Promise<void> =
             companyId:companyId
         },
        });
-       res.status(200).json({ status: true, data: user, message: 'Data fetched Successfully' });
+       dispatchSuc(res, { data: user, message: 'Data retrieved successfully.'});
     } catch (error) {
         console.error('Error fetching Location:', error);
-        res.status(200).json({ 
-            status: false, 
-            data: null, 
-            message: 'Failed to fetch data. Please try again later.' 
-        });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };
 
@@ -195,11 +178,6 @@ export const getJobs = async (req: Request, res: Response): Promise<void> => {
     try {
         // Accessing parameters from the URL
         const { userRecId, companyId } = req.query;
-
-        if (!Job) {
-            throw new Error('Job model is not initialized.');
-        }
-
         // Ensure companyId is provided (since it's needed for the query)
         if (!companyId) {
             res.status(400).json({ 
@@ -219,17 +197,9 @@ export const getJobs = async (req: Request, res: Response): Promise<void> => {
             },
         });
 
-        res.status(200).json({ 
-            status: true, 
-            data: job, 
-            message: 'Data fetched successfully' 
-        });
+        dispatchSuc(res, { data: job, message: 'Data retrieved successfully.'});
     } catch (error) {
         console.error('Error fetching Job:', error);
-        res.status(500).json({ 
-            status: false, 
-            data: null, 
-            message: 'Failed to fetch data. Please try again later.' 
-        });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };

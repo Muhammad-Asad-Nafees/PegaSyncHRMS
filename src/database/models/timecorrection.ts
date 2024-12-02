@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import ApprovalProfile from './approvalprofile';
 
 // Define the TimeCorrection model class
 class TimeCorrection extends Model<InferAttributes<TimeCorrection>, InferCreationAttributes<TimeCorrection>> {
@@ -8,9 +9,11 @@ class TimeCorrection extends Model<InferAttributes<TimeCorrection>, InferCreatio
   declare typeId: number;
   declare correctionTime: string;
   declare comment: string;
-  declare empProfileID: number;
-  declare empDetailID: number;
+  declare empProfileId: number;
+  declare empDetailId: number;
   declare isActive: CreationOptional<number>;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 export default TimeCorrection;
@@ -45,11 +48,11 @@ export function init(sequelize: Sequelize) {
         type: DataTypes.STRING,
         allowNull: true, // Nullable for additional comments
       },
-      empProfileID: {
+      empProfileId: {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming it's required
       },
-      empDetailID: {
+      empDetailId: {
         type: DataTypes.INTEGER,
         allowNull: false, // Assuming it's required
       },
@@ -58,16 +61,41 @@ export function init(sequelize: Sequelize) {
         allowNull: false,
         defaultValue: 1, // Default value for isActive (active)
       },
+      createdAt: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       
     },
     {
       sequelize,
       modelName: 'TimeCorrection', // Model name in Sequelize
       tableName: 'TimeCorrections', // Table name in DB
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
     }
   );
+  // TimeCorrection.afterCreate(async (timeCorrection, options) => {
+  //   try {
+  //     // Create an ApprovalProfile record
+  //     await ApprovalProfile.create({
+  //       requestId: timeCorrection.id,
+  //       isApproved: 0, // Default to not approved
+  //       requestDate: new Date(),
+  //       submittedDate: new Date(),
+  //       zoneDateTime: timeCorrection.correctionTime, // Using correctionTime as an example
+  //       isActive: 1,
+  //       isDeleted: 0,
+  //       createdAt: new Date(),
+  //       updatedAt: new Date()
+  //     });
+  //     console.log(`ApprovalProfile created for TimeCorrection ID: ${timeCorrection.id}`);
+  //   } catch (error) {
+  //     console.error('Error creating ApprovalProfile:', error);
+  //   }
+  // });
 }
 
 // Define associations (if necessary)

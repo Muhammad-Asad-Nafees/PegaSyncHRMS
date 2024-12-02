@@ -60,15 +60,7 @@ module.exports = {
         onDelete: 'cascade'
       },
       empDetailId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        foreignKey: true,
-        references: {
-          model: 'empAttendanceDetails',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade'
       },
       tableId: {
         type: Sequelize.INTEGER,
