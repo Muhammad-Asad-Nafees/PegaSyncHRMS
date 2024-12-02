@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
-import { Users, Company, Client, RoleAssignment, Roles, Jobs, Location } from '../database';
+import { Users, Company, Client, RoleAssignment, Roles, Jobs, Location ,Permissions,PermAssignments} from '../database';
 import { Sequelize } from 'sequelize';
-import PermAssignment from '../database/models/permassignments';
-import Permissions from '../database/models/permissions';
-import Job from '../database/models/jobs';
+import {  dispatchSuc,dispatchErr } from '../lib/tool';
 
 const sequelize = new Sequelize('pegasynchrms', 'root', 'root', {
     host: 'localhost', // Replace with your database host
@@ -18,10 +16,10 @@ export const createClient = async (req: Request, res: Response): Promise<void> =
         const set = await Client.create({
             clientName: clientName,
         });
-        res.status(200).json({ status: true, message: 'Client Created Successful', data: set });
+        dispatchSuc(res, { data: set, message: 'Client Created Successful.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };        
 
@@ -37,10 +35,9 @@ export const createCompany = async (req: Request, res: Response): Promise<void> 
             city: city,
             countryID: countryID,
         });
-        res.status(200).json({ status: true, message: 'Company Created Successful', data: set });
-
+        dispatchSuc(res, { data: set, message: 'Company Created Successful.'});
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };        
 
@@ -57,10 +54,10 @@ export const createLocation = async (req: Request, res: Response): Promise<void>
             companyId: companyId,
             countryId: countryId
         });
-        res.status(200).json({ status: true, message: 'Location Created Successful', data: set });
+        dispatchSuc(res, { data: set, message: 'Location Created Successful.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };  
 
@@ -68,16 +65,16 @@ export const createJobs = async (req: Request, res: Response): Promise<void> => 
 
     const { jobName,jobDesc,jobLevelId,companyId}= req.body;
     try {
-        const set = await Job.create({
+        const set = await Jobs.create({
             jobName: jobName,
             jobDesc: jobDesc,
             jobLevelId: jobLevelId,
             companyId: companyId 
         })
-        res.status(200).json({ status: true, message: 'Job Created Successful', data: set });
+        dispatchSuc(res, { data: set, message: 'Jobs Created Successful.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 };
 
@@ -92,10 +89,10 @@ export const createRoles = async (req: Request, res: Response): Promise<void> =>
             jobId: jobId,
             companyId: companyId   
         })
-        res.status(200).json({ status: true, message: 'Roles Created Successful', data: set });
+        dispatchSuc(res, { data: set, message: 'Roles Created Successful.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 }; 
 
@@ -108,10 +105,10 @@ export const createPermissions = async (req: Request, res: Response): Promise<vo
             permissionDesc: permissionDesc,
             companyId: companyId,
         })
-        res.status(200).json({ status: true, message: 'Permissions Created Successful', data: set });
+        dispatchSuc(res, { data: set, message: 'Permissions Created Successful.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 }; 
 
@@ -138,10 +135,10 @@ export const userRolesAssignment = async (req: Request, res: Response): Promise<
         //@ts-ignore
         const createdAssignments = await RoleAssignment.bulkCreate(assignments);
 
-        res.status(200).json({ status: true, message: 'Roles Assign Successfully', data: createdAssignments });
+        dispatchSuc(res, { data: createdAssignments, message: 'Roles Assigned Successfully.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 }; 
 
@@ -152,7 +149,7 @@ export const assignModulePermissions = async (req: Request, res: Response): Prom
         const permIds = permId.split(',').map((id: string) => id.trim());
         const roleIds = roleId.split(',').map((id: string) => id.trim());
         
-        const existingAssignments = await PermAssignment.findAll({
+        const existingAssignments = await PermAssignments.findAll({
             where: {
                 roleId: roleIds,
                 isActive : 1
@@ -196,7 +193,7 @@ export const assignModulePermissions = async (req: Request, res: Response): Prom
 
         // Perform updates
         if (assignmentsToDeactivate.length > 0) {
-            await PermAssignment.update(
+            await PermAssignments.update(
                 { isActive: 0 },
                 {
                     where: {
@@ -211,10 +208,10 @@ export const assignModulePermissions = async (req: Request, res: Response): Prom
             //@ts-ignore
             await PermAssignment.bulkCreate(assignmentsToInsert);
         }
-        res.status(200).json({ status: true, message: 'Permission Assign Successfully', data: assignmentsToInsert });
+        dispatchSuc(res, { data: assignmentsToInsert, message: 'Permission Assigned Successfully.'});
 
     } catch (error) {
-        res.status(500).json({ status: true, message: 'Something went wrong please try again later.', data: error });
+        dispatchErr(res, { message: 'Something went wrong. Please try again later.' }, 500);
     }
 }; 
 
